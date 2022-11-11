@@ -1,3 +1,5 @@
+using Contracts;
+using EFCData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +12,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<GreenhouseContext>();
+builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
 
 var app = builder.Build();
 
