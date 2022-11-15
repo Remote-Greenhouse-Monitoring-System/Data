@@ -3,6 +3,8 @@ using EFCData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebSocketClients.Clients;
+using WebSocketClients.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<GreenhouseContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
+builder.Services.AddScoped<IMeasurementClient, MeasurementClient>();
 
 var app = builder.Build();
 

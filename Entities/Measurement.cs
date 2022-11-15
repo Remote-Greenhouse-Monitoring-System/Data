@@ -9,4 +9,17 @@ public class Measurement
     public float Co2 { get; set; }
     public int Light { get; set; }
     public DateTime Timestamp { get; set; }
+
+    public Measurement()
+    {
+    }
+
+    public Measurement(float temperature, float humidity, float co2, int light)
+    {
+        Temperature = temperature;
+        Humidity = humidity;
+        Co2 = co2;
+        Light = light;
+        Timestamp = DateTime.Now;
+    }
 }
