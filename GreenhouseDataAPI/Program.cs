@@ -31,6 +31,18 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+
+//websockets:
+// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/websockets?view=aspnetcore-7.0
+// this is how keepalive interval can be set (default is 2mins)
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2)
+};
+//specify allowed request origins
+// webSocketOptions.AllowedOrigins.Add("https://client.com");
+app.UseWebSockets(webSocketOptions);
+
 app.MapControllers();
 
 app.Run();
