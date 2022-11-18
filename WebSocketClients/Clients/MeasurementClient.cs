@@ -1,4 +1,6 @@
 ﻿using System.Net.Sockets;
+using System.Net.WebSockets;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace WebSocketClients.Clients;
@@ -12,18 +14,12 @@ public class MeasurementClient : IMeasurementClient
 {
 
     private IMeasurementService? _measurementService;
-    private StreamReader _streamReader;
-    private StreamWriter _streamWriter;
+    private ClientWebSocket _clientWebSocket;
     
     public MeasurementClient(IMeasurementService measurementService)
     {
         _measurementService = measurementService;
-        
-        int port = 1234;
-        TcpClient client = new TcpClient("localhost", port);      				
-        NetworkStream stream = client.GetStream();
-        _streamReader = new StreamReader(stream);
-        _streamWriter = new StreamWriter(stream) { AutoFlush = true };
+        _clientWebSocket = new ClientWebSocket();
     }
 
     
@@ -45,22 +41,21 @@ public class MeasurementClient : IMeasurementClient
     public async Task<PlantProfile> ClientTestPlantProfile()
     {
         PlantProfile plantProfile = new PlantProfile("name","dscrpt",1,2,3, 4);
-        _streamWriter.WriteLine(JsonConvert.SerializeObject(plantProfile));
-        Console.Out.WriteLine("sent: " + JsonConvert.SerializeObject(plantProfile));
+        
+        string json = JsonConvert.SerializeObject(plantProfile);
+        await _clientWebSocket.ConnectAsync(new Uri("wss://localhost:1234/ws"), CancellationToken.None);
+        await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(json), WebSocketMessageType.Text, true, CancellationToken.None);
+        Console.Out.WriteLine("sent: " + json);
 
-        var received = _streamReader.ReadLine();
-        Console.Out.WriteLine("received: " + received);
-        return JsonConvert.DeserializeObject<PlantProfile>(received);
+        Byte[] buffer = new byte[256];
+        var x = await _clientWebSocket.ReceiveAsync(buffer, CancellationToken.None);
+        var strResult = System.Text.Encoding.UTF8.GetString(buffer);
+        Console.Out.WriteLine("received: " + strResult);
+        return JsonConvert.DeserializeObject<PlantProfile>(strResult);
     }
-    
-    public async Task<Measurement> ClientTestMeasurements()
-    {
-        Measurement measurement = new Measurement(1,2,3,4);
-        _streamWriter.WriteLine(JsonConvert.SerializeObject(measurement));
-        Console.Out.WriteLine("sent: " + JsonConvert.SerializeObject(measurement));
 
-        var received = _streamReader.ReadLine();
-        Console.Out.WriteLine("received: " + received);
-        return JsonConvert.DeserializeObject<Measurement>(received);
+    public Task<Measurement> ClientTestMeasurements()
+    {
+        throw new NotImplementedException();
     }
 }
