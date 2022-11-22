@@ -8,7 +8,7 @@ public class GreenhouseContext : DbContext
     public DbSet<Measurement>? Measurements { get; set; } = null!;
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(@"Server=DESKTOP-A0MGCBJ;Database=GreenhouseTest;User Id=Mihoi;Password=12345;TrustServerCertificate=True;Trusted_Connection=True");
+        optionsBuilder.UseSqlServer(@"Server=tcp:greenhouse-db-server.database.windows.net,1433;Initial Catalog=GreenhouseDB;Persist Security Info=False;User ID=viasep4;Password=Vanaheim_Perplex1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
