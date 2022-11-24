@@ -18,6 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<GreenhouseContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
 builder.Services.AddScoped<IMeasurementClient, MeasurementClient>();
+builder.Services.AddScoped<IPlantProfileService, PlantProfileDAO>();
 
 builder.Services.AddCors(options =>
 {
