@@ -78,12 +78,12 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("remove")]
-    public async Task<ActionResult> RemoveUser([FromBody] User user)
+    [Route("remove/{id:long}")]
+    public async Task<ActionResult> RemoveUser([FromRoute] long id)
     {
         try
         {
-            await _service.RemoveUser(user);
+            await _service.RemoveUser(id);
             return Ok("User removed successfully");
         }
         catch (Exception e)

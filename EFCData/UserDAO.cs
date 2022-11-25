@@ -37,13 +37,16 @@ public class UserDAO : IUserService
 
     }
 
-    public async Task RemoveUser(User user)
+    public async Task RemoveUser(long userId)
+
     {
+        User u = await _context.Users.FirstAsync(u => u.Id == userId);
         await Task.Run((() =>
         {
-            _context.Users!.Remove(user);
+            _context.Users!.Remove(u);
         }));
         await _context.SaveChangesAsync();
+        
     }
 
     public async Task<User> UpdateUser(User user)
