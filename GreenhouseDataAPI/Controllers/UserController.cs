@@ -111,11 +111,11 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("login")]
-    public async Task<ActionResult<User>> LogUserIn([FromQuery] string username, [FromQuery] string password)
+    public async Task<ActionResult<User>> LogUserIn([FromQuery] string email, [FromQuery] string password)
     {
         try
         {
-            User u = await _service.LogUserIn(username, password);
+            User u = await _service.LogUserIn(email, password);
             return Ok(u);
         }
         catch (Exception e)

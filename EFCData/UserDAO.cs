@@ -58,13 +58,13 @@ public class UserDAO : IUserService
         return await _context.Users!.FirstAsync(u => u.Email == user.Email);
     }
 
-    public async Task<User> LogUserIn(string username, string password)
+    public async Task<User> LogUserIn(string email, string password)
     {
-        User user=await _context.Users!.FirstAsync(u => u.Username == username);
+        User user=await _context.Users!.FirstAsync(u => u.Email == email);
         if (user.Password == password)
         {
             return user;
         }
-        throw new Exception("The password provided does not match");
+        throw new Exception("The password provided does not match.");
     }
 }
