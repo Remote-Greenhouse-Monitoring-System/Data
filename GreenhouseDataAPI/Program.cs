@@ -1,5 +1,6 @@
 using Contracts;
 using EFCData;
+using Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,15 +18,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<GreenhouseContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
+builder.Services.AddScoped<IUserService, UserDAO>();
 builder.Services.AddScoped<IMeasurementClient, MeasurementClient>();
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(cbuilder =>
-    {
-        cbuilder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
-    });
-});
+
 var app = builder.Build();
 
 app.UseSwagger();

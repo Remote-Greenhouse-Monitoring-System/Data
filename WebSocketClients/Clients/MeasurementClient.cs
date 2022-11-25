@@ -40,12 +40,20 @@ public class MeasurementClient : IMeasurementClient
 
     public async Task<PlantProfile> ClientTestPlantProfile()
     {
+        string payload =
+            "{\"cmd\"  : \"tx\",\"EUI\"  : \"0004A30B00E8355E\",\"port\" : 2,\"confirmed\" : false,\"data\" : \"E803\"}";
         PlantProfile plantProfile = new PlantProfile("name","dscrpt",1,2,3, 4);
-        
-        string json = JsonConvert.SerializeObject(plantProfile);
-        await _clientWebSocket.ConnectAsync(new Uri("wss://localhost:1234/ws"), CancellationToken.None);
-        await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(json), WebSocketMessageType.Text, true, CancellationToken.None);
-        Console.Out.WriteLine("sent: " + json);
+        try
+        {
+            await _clientWebSocket.ConnectAsync(new Uri("wss://iotnet.cibicom.dk/app?token=vnoUBwAAABFpb3RuZXQuY2liaWNvbS5ka54Zx4fqYp5yzAQtnGzDDUw="), CancellationToken.None);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(payload), WebSocketMessageType.Text, true, CancellationToken.None);
+        Console.Out.WriteLine("sent: " + payload);
 
         Byte[] buffer = new byte[256];
         var x = await _clientWebSocket.ReceiveAsync(buffer, CancellationToken.None);
