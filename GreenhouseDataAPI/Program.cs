@@ -20,6 +20,7 @@ builder.Services.AddDbContext<GreenhouseContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
 builder.Services.AddScoped<IUserService, UserDAO>();
 builder.Services.AddScoped<IMeasurementClient, MeasurementClient>();
+builder.Services.AddScoped<IPlantProfileService, PlantProfileDAO>();
 
 
 var app = builder.Build();

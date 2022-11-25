@@ -32,7 +32,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: webapi
-          path: webapi
+          path: webapi/**
+          if-no-files-found: error
 
   deploy:
     runs-on: windows-latest
@@ -46,7 +47,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: webapi
-      - run: ls
+          path: webapi
+      - run: ls 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
