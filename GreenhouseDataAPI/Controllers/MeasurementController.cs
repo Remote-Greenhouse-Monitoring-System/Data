@@ -6,7 +6,7 @@ using WebSocketClients.Interfaces;
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
-[Route("/")]
+[Route("/Measurement/")]
 public class MeasurementController : ControllerBase
 {
     private readonly IMeasurementService? _measurementService;
