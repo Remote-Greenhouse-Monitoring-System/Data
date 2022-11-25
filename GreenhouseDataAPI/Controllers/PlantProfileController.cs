@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
-[Route("/")]
+[Route("/PlantProfiles/")]
 
 public class PlantProfileController : ControllerBase
 {

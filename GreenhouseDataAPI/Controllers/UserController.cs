@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GreenhouseDataAPI.Controllers;
 [ApiController]
-[Route("/User/")]
+[Route("/Users/")]
 public class UserController : ControllerBase
 {
     private IUserService _service;
@@ -14,7 +14,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/byUsername/{username}")]
+    [Route("byUsername/{username}")]
     public async Task<ActionResult<User>> GetUserByUsername([FromRoute] string username)
     {
         try
@@ -30,7 +30,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/byEmail/{email}")]
+    [Route("byEmail/{email}")]
     public async Task<ActionResult<User>> GetUserByEmail([FromRoute] string email)
     {
         try
@@ -46,7 +46,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/byId/{id:long}")]
+    [Route("byId/{id:long}")]
     public async Task<ActionResult<User>> GetUserById([FromRoute] long id)
     {
         try
@@ -62,7 +62,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    [Route("/add")]
+    [Route("add")]
     public async Task<ActionResult<User>> AddUser([FromBody] User user)
     {
         try
@@ -78,7 +78,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("/remove")]
+    [Route("remove")]
     public async Task<ActionResult> RemoveUser([FromBody] User user)
     {
         try
@@ -94,7 +94,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPatch]
-    [Route("/update")]
+    [Route("update")]
     public async Task<ActionResult<User>> UpdateUser([FromBody] User user)
     {
         try
@@ -110,7 +110,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/login")]
+    [Route("login")]
     public async Task<ActionResult<User>> LogUserIn([FromQuery] string username, [FromQuery] string password)
     {
         try
