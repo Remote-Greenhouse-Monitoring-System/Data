@@ -7,6 +7,7 @@ public class GreenhouseContext : DbContext
 {
     public DbSet<Measurement>? Measurements { get; set; } = null!;
     public DbSet<GreenHouse>? GreenHouses { get; set; } = null!;
+    public DbSet<PlantProfile> PlantProfiles { get; set; } = null!;
     public DbSet<User>? Users { get; set; } = null!;
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -18,6 +19,7 @@ public class GreenhouseContext : DbContext
     {
         modelBuilder.Entity<Measurement>().HasKey(m => m.Id);
         modelBuilder.Entity<GreenHouse>().HasKey(m => m.GID);
+        modelBuilder.Entity<PlantProfile>().HasKey(m => m.Id);
         modelBuilder.Entity<User>().HasKey(m => m.Id);
     }
 }
