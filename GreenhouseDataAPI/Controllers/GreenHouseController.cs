@@ -19,7 +19,7 @@ public class GreenHouseController : ControllerBase {
     //-	Returns a list of greenhouse objects, corresponding to the user with the queried username.
     [HttpGet]
     [Route("{uid:long}")]
-    public async Task<ActionResult<List<GreenHouse>>> GetGreenHouses(long uid) {
+    public async Task<ActionResult<List<GreenHouse>>> GetGreenHouses([FromRoute] long uid) {
         try {
             ICollection<GreenHouse> greenHouses = await _greenHouseService.GetGreenHouses(uid);
             // Change the service to return only the greenhouses of the user ?
@@ -36,7 +36,7 @@ public class GreenHouseController : ControllerBase {
     
     [HttpPost]
     [Route("{uid:long}")]
-    public async Task<ActionResult<GreenHouse>> CreateGreenHouse(long uid, [FromBody] GreenHouse greenHouse) {
+    public async Task<ActionResult<GreenHouse>> CreateGreenHouse([FromRoute] long uid, [FromBody] GreenHouse greenHouse) {
         try {
             GreenHouse newGreenHouse = await _greenHouseService.CreateGreenHouse(uid, greenHouse);
             return Ok(newGreenHouse);
@@ -64,7 +64,7 @@ public class GreenHouseController : ControllerBase {
     //-	Argument: a greenhouse object
     [HttpDelete]
     [Route("{gid:long}")]
-    public async Task<ActionResult> RemoveGreenHouse(long gid) {
+    public async Task<ActionResult> RemoveGreenHouse([FromRoute] long gid) {
         try {
             await _greenHouseService.RemoveGreenHouse(gid);
             return Ok();
