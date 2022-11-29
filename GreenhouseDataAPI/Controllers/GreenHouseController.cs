@@ -14,17 +14,14 @@ public class GreenHouseController : ControllerBase {
     public GreenHouseController(IGreenHouseService greenHouseService) {
         _greenHouseService = greenHouseService;
     }
-
-    //TODO: we must handle security, and how users are getting data
     
     
     //-	Returns a list of greenhouse objects, corresponding to the user with the queried username.
     [HttpGet]
     [Route("{uid:long}")]
-    public async Task<ActionResult<List<GreenHouse>>> GetGreenHouse(long uid) {
+    public async Task<ActionResult<List<GreenHouse>>> GetGreenHouses(long uid) {
         try {
-            ICollection<GreenHouse> greenHouses = await _greenHouseService.GetGreenHouses();
-            //TODO I Need to filter the greenhouses by uid, but this should not be done in the controller,
+            ICollection<GreenHouse> greenHouses = await _greenHouseService.GetGreenHouses(uid);
             // Change the service to return only the greenhouses of the user ?
             return Ok(greenHouses);
         }
@@ -41,7 +38,7 @@ public class GreenHouseController : ControllerBase {
     [Route("{uid:long}")]
     public async Task<ActionResult<GreenHouse>> CreateGreenHouse(long uid, [FromBody] GreenHouse greenHouse) {
         try {
-            GreenHouse newGreenHouse = await _greenHouseService.CreateGreenHouse(greenHouse);
+            GreenHouse newGreenHouse = await _greenHouseService.CreateGreenHouse(uid, greenHouse);
             return Ok(newGreenHouse);
         }
         catch (Exception ex) {
@@ -53,7 +50,6 @@ public class GreenHouseController : ControllerBase {
     //-	Argument: a greenhouse object
 
     [HttpPatch]
-
     public async Task<ActionResult<GreenHouse>> UpdateGreenHouse([FromBody] GreenHouse greenHouse) {
         try {
             GreenHouse updatedGreenHouse = await _greenHouseService.UpdateGreenHouse(greenHouse);
@@ -68,17 +64,15 @@ public class GreenHouseController : ControllerBase {
     //-	Argument: a greenhouse object
     [HttpDelete]
     [Route("{gid:long}")]
-    public async Task<ActionResult<GreenHouse>> RemoveGreenHouse(long id) {
+    public async Task<ActionResult> RemoveGreenHouse(long gid) {
         try {
-            await _greenHouseService.RemoveGreenHouse(id);
+            await _greenHouseService.RemoveGreenHouse(gid);
             return Ok();
         }
         catch (Exception ex) {
             return BadRequest(ex.Message);
         }
     }
-    
-    
 
 }
     
