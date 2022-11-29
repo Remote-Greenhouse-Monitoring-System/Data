@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketClients", "WebSock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{0810849D-F9D9-4728-83EC-B9D64AA3D349}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WsListenerBackgroundService", "WsListenerBackgroundService\WsListenerBackgroundService.csproj", "{B953B4DC-48C4-4592-AD1C-90B6ED30C385}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,5 +42,9 @@ Global
 		{0810849D-F9D9-4728-83EC-B9D64AA3D349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0810849D-F9D9-4728-83EC-B9D64AA3D349}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0810849D-F9D9-4728-83EC-B9D64AA3D349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B953B4DC-48C4-4592-AD1C-90B6ED30C385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B953B4DC-48C4-4592-AD1C-90B6ED30C385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B953B4DC-48C4-4592-AD1C-90B6ED30C385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B953B4DC-48C4-4592-AD1C-90B6ED30C385}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

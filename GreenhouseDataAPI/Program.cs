@@ -3,6 +3,7 @@ using EFCData;
 using GreenhouseDataAPI;
 using WebSocketClients.Clients;
 using WebSocketClients.Interfaces;
+using WsListenerBackgroundService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +23,9 @@ builder.Services.AddScoped<IPlantProfileService, PlantProfileDAO>();
 //WS-client
 builder.Services.AddScoped<IGreenhouseClient, GreenhouseClient>();
 
-// builder.Services.AddHostedService(sp=>sp.GetService<WebSocketListener>());
-// builder.Services.AddSingleton<WebSocketListener>();
-// builder.Services.AddHostedService<WsListenerBackgroundService>();
+// builder.Services.AddHostedService(sp=>sp.GetService<BackgroundListener>());
+// builder.Services.AddSingleton<BackgroundListener>();
+builder.Services.AddHostedService<BackgroundListener>();
 
 var app = builder.Build();
 
