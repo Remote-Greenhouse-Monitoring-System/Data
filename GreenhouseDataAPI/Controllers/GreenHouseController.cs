@@ -6,7 +6,7 @@ using WebSocketClients.Interfaces;
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
-[Route("/")]
+[Route("/greenhouses/")]
 
 public class GreenHouseController : ControllerBase {
 
@@ -17,17 +17,14 @@ public class GreenHouseController : ControllerBase {
         _greenHouseService = greenHouseService;
         _greenhouseClient = greenhouseClient;
     }
-
-    //TODO: we must handle security, and how users are getting data
     
     
     //-	Returns a list of greenhouse objects, corresponding to the user with the queried username.
     [HttpGet]
     [Route("{uid:long}")]
-    public async Task<ActionResult<List<GreenHouse>>> GetGreenHouse(long uid) {
+    public async Task<ActionResult<List<GreenHouse>>> GetGreenHouses([FromRoute] long uid) {
         try {
-            ICollection<GreenHouse> greenHouses = await _greenHouseService.GetGreenHouses();
-            //TODO I Need to filter the greenhouses by uid, but this should not be done in the controller,
+            ICollection<GreenHouse> greenHouses = await _greenHouseService.GetGreenHouses(uid);
             // Change the service to return only the greenhouses of the user ?
             return Ok(greenHouses);
         }
@@ -42,9 +39,9 @@ public class GreenHouseController : ControllerBase {
     
     [HttpPost]
     [Route("{uid:long}")]
-    public async Task<ActionResult<GreenHouse>> CreateGreenHouse(long uid, [FromBody] GreenHouse greenHouse) {
+    public async Task<ActionResult<GreenHouse>> CreateGreenHouse([FromRoute] long uid, [FromBody] GreenHouse greenHouse) {
         try {
-            GreenHouse newGreenHouse = await _greenHouseService.CreateGreenHouse(greenHouse);
+            GreenHouse newGreenHouse = await _greenHouseService.CreateGreenHouse(uid, greenHouse);
             return Ok(newGreenHouse);
         }
         catch (Exception ex) {
@@ -56,7 +53,6 @@ public class GreenHouseController : ControllerBase {
     //-	Argument: a greenhouse object
 
     [HttpPatch]
-
     public async Task<ActionResult<GreenHouse>> UpdateGreenHouse([FromBody] GreenHouse greenHouse) {
         try {
             GreenHouse updatedGreenHouse = await _greenHouseService.UpdateGreenHouse(greenHouse);
@@ -71,9 +67,9 @@ public class GreenHouseController : ControllerBase {
     //-	Argument: a greenhouse object
     [HttpDelete]
     [Route("{gid:long}")]
-    public async Task<ActionResult<GreenHouse>> RemoveGreenHouse(long id) {
+    public async Task<ActionResult> RemoveGreenHouse([FromRoute] long gid) {
         try {
-            await _greenHouseService.RemoveGreenHouse(id);
+            await _greenHouseService.RemoveGreenHouse(gid);
             return Ok();
         }
         catch (Exception ex) {
@@ -99,20 +95,5 @@ public class GreenHouseController : ControllerBase {
         }
     }
 
-    [HttpPost]
-    [Route("clientTest/{gId:long}")]
-    public async Task<ActionResult> AddThresholdToGreenhouse([FromRoute] long gid, [FromBody] Threshold threshold)
-    {
-        try
-        {
-            await _greenhouseClient.SetThresholdToGreenhouse(gid, threshold);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            return StatusCode(500, e.Message);
-        }
-    }
 }
     

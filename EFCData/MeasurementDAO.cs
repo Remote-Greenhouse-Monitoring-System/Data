@@ -37,7 +37,8 @@ public class MeasurementDAO : IMeasurementService
         TimeSpan timeSpan = new TimeSpan(hours, 0, 0);
         ICollection<Measurement> measurements =
             await _greenhouseContext.Measurements!
-                .Where(m => m.Timestamp >= DateTime.Now.Subtract(timeSpan) && m.GreenhouseId==gId)
+                .Where(m => m.GreenhouseId == gId && m.Timestamp > DateTime.Now - timeSpan)
+                // .Where(m => m.Timestamp >= DateTime.Now.Subtract(timeSpan) && m.GreenhouseId==gId)
                 .ToListAsync();
         return measurements;
     }
