@@ -60,7 +60,7 @@ public class GreenhouseClient : IGreenhouseClient
             double humidity = Math.Round(Convert.ToInt16(receivedPayload.data.Substring(i+1*l,l),16) / 10.0, 1);
             double co2 = Convert.ToInt16(receivedPayload.data.Substring(i+2*l,l),16);
             byte status = Convert.ToByte(receivedPayload.data.Substring(i+3*l,2),16);
-            m = new Measurement(temperature, humidity, co2, 1);
+            m = new Measurement((float)temperature, (float)humidity, (float)co2, 1);
         }
         
         return m;
