@@ -1,10 +1,6 @@
 using Contracts;
 using EFCData;
-using Entities;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using GreenhouseDataAPI;
 using WebSocketClients.Clients;
 using WebSocketClients.Interfaces;
 
@@ -17,22 +13,25 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<GreenhouseContext>();
+// builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
 builder.Services.AddScoped<IUserService, UserDAO>();
-builder.Services.AddScoped<IMeasurementClient, MeasurementClient>();
+builder.Services.AddScoped<IGreenHouseService, GreenHouseDAO>();
 builder.Services.AddScoped<IPlantProfileService, PlantProfileDAO>();
 
+//WS-client
+builder.Services.AddScoped<IGreenhouseClient, GreenhouseClient>();
+
+// builder.Services.AddHostedService(sp=>sp.GetService<WebSocketListener>());
+// builder.Services.AddSingleton<WebSocketListener>();
+// builder.Services.AddHostedService<WsListenerBackgroundService>();
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
-
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 
@@ -46,6 +45,7 @@ var webSocketOptions = new WebSocketOptions
 //specify allowed request origins
 // webSocketOptions.AllowedOrigins.Add("https://client.com");
 app.UseWebSockets(webSocketOptions);
+
 
 app.MapControllers();
 

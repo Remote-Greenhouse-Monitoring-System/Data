@@ -1,6 +1,7 @@
 using Contracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
+using WebSocketClients.Interfaces;
 
 namespace GreenhouseDataAPI.Controllers;
 
@@ -10,9 +11,11 @@ namespace GreenhouseDataAPI.Controllers;
 public class GreenHouseController : ControllerBase {
 
     private readonly IGreenHouseService _greenHouseService;
+    private IGreenhouseClient _greenhouseClient;
 
-    public GreenHouseController(IGreenHouseService greenHouseService) {
+    public GreenHouseController(IGreenHouseService greenHouseService, IGreenhouseClient greenhouseClient) {
         _greenHouseService = greenHouseService;
+        _greenhouseClient = greenhouseClient;
     }
 
     //TODO: we must handle security, and how users are getting data
@@ -79,6 +82,37 @@ public class GreenHouseController : ControllerBase {
     }
     
     
+    //ws-client test
+    [HttpGet]
+    [Route("clientTest/")]
+    public async Task<ActionResult> ClientTest()
+    {
+        try
+        {
+            await _greenhouseClient.WsClientTest();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, e.Message);
+        }
+    }
 
+    [HttpPost]
+    [Route("clientTest/{gId:long}")]
+    public async Task<ActionResult> AddThresholdToGreenhouse([FromRoute] long gid, [FromBody] Threshold threshold)
+    {
+        try
+        {
+            await _greenhouseClient.SetThresholdToGreenhouse(gid, threshold);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, e.Message);
+        }
+    }
 }
     

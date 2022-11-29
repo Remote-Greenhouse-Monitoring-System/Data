@@ -1,7 +1,6 @@
 ﻿using Contracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
-using WebSocketClients.Interfaces;
 
 namespace GreenhouseDataAPI.Controllers;
 
@@ -10,12 +9,9 @@ namespace GreenhouseDataAPI.Controllers;
 public class MeasurementController : ControllerBase
 {
     private readonly IMeasurementService? _measurementService;
-    private IMeasurementClient? _measurementClient;
-
-    public MeasurementController(IMeasurementService? measurementService, IMeasurementClient? measurementClient)
+    public MeasurementController(IMeasurementService? measurementService)
     {
         _measurementService = measurementService;
-        _measurementClient = measurementClient;
     }
 
     [HttpGet]
@@ -106,38 +102,6 @@ public class MeasurementController : ControllerBase
         {
             ICollection<Measurement> measurements = await _measurementService!.GetAllPerYear(gId,year);
             return Ok(measurements);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message.ToString());
-            return StatusCode(500, e.Message);
-        }
-    }
-    
-    
-    [HttpGet]
-    [Route("clientTest/plantProfile")]
-    public async Task<ActionResult<PlantProfile>> ClientTest()
-    {
-        try
-        {
-            PlantProfile p = await _measurementClient!.ClientTestPlantProfile();
-            return Ok(p);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message.ToString());
-            return StatusCode(500, e.Message);
-        }
-    }
-    [HttpGet]
-    [Route("clientTest/measurement")]
-    public async Task<ActionResult<PlantProfile>> ClientTest2()
-    {
-        try
-        {
-            Measurement m = await _measurementClient!.ClientTestMeasurements();
-            return Ok(m);
         }
         catch (Exception e)
         {

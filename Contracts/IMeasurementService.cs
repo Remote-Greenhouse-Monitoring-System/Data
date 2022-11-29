@@ -10,4 +10,7 @@ public interface IMeasurementService
     public Task<ICollection<Measurement>> GetAllPerDays(long gId, int days);
     public Task<ICollection<Measurement>> GetAllPerMonth(long gId, int month, int year);
     public Task<ICollection<Measurement>> GetAllPerYear(long gId, int year);
+    
+    //upload:
+    public Task AddMeasurementAsync(Measurement measurement);
 }
