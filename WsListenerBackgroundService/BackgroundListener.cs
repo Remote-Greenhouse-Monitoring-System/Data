@@ -51,24 +51,25 @@ public class BackgroundListener : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         { 
             // keep receiving:
-            Byte[] buffer = new byte[255];
+            Byte[] buffer = new byte[1024];
             _logger.LogWarning("waiting for measurements ... {Time}", DateTime.Now);
             // await Task.Delay(10000, stoppingToken);
             var x = await _clientWebSocket.ReceiveAsync(buffer, CancellationToken.None);
             var strResult = Encoding.UTF8.GetString(buffer);
             // string strResult = "{\"cmd\":\"rx\",\"data\":\"00FC016700C8E0\"}";
+            // {"cmd":"rx","seqno":1736,"EUI":"0004A30B00E8355E","ts":1669797345523,"fcnt":7,"port":2,"freq":867500000,"rssi":-115,"snr":-6,"toa":0,"dr":"SF12 BW125 4/5","ack":false,"bat":255,"offline":false,"data":"00320019041a00"}
             _logger.LogWarning("received: {String}", strResult);
             
-            Measurement? m = ReceivedDataToMeasurement(strResult);
-            if (m != null)
-            {
-                _logger.LogWarning("received: {Measurement}", m);
-                using (IServiceScope scope = _serviceProvider.CreateScope())
-                {
-                    IMeasurementService measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
-                    await measurementService.AddMeasurementAsync(m);
-                }
-            }
+            // Measurement? m = ReceivedDataToMeasurement(strResult);
+            // if (m != null)
+            // {
+            //     _logger.LogWarning("received: {Measurement}", m);
+            //     using (IServiceScope scope = _serviceProvider.CreateScope())
+            //     {
+            //         IMeasurementService measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
+            //         await measurementService.AddMeasurementAsync(m);
+            //     }
+            // }
             
             //ToDo: when to break the loop, close the connection and kill the thread? never?
         }

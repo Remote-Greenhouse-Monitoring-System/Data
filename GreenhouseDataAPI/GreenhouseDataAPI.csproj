@@ -18,4 +18,6 @@
       <ProjectReference Include="..\WsListenerBackgroundService\WsListenerBackgroundService.csproj" />
     </ItemGroup>
 
+    <PropertyGroup><ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles></PropertyGroup>
+
 </Project>
