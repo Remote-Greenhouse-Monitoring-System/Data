@@ -6,16 +6,16 @@ namespace EFCData;
 
 public class MeasurementDAO : IMeasurementService
 {
-    private readonly GreenhouseContext _greenhouseContext;
+    private readonly GreenhouseSystemContext _greenhouseSystemContext;
 
-    public MeasurementDAO(GreenhouseContext greenhouseContext)
+    public MeasurementDAO(GreenhouseSystemContext greenhouseSystemContext)
     {
-        _greenhouseContext = greenhouseContext;
+        _greenhouseSystemContext = greenhouseSystemContext;
     }
 
     public async Task<ICollection<Measurement>> GetMeasurements(long gId, int amount)
     {
-        ICollection<Measurement> measurements = await _greenhouseContext.Measurements!.Take(amount)
+        ICollection<Measurement> measurements = await _greenhouseSystemContext.Measurements!.Take(amount)
             .Where(m => m.GreenhouseId == gId)
             .ToListAsync();
         return measurements ;
@@ -23,7 +23,7 @@ public class MeasurementDAO : IMeasurementService
 
     public async Task<Measurement> GetLastMeasurement(long gId)
     {
-        Measurement measurement = await _greenhouseContext.
+        Measurement measurement = await _greenhouseSystemContext.
             Measurements!
             .Where(m=>m.GreenhouseId==gId)
             .OrderBy(m => m.Timestamp)
@@ -35,10 +35,10 @@ public class MeasurementDAO : IMeasurementService
     {
 
         TimeSpan timeSpan = new TimeSpan(hours, 0, 0);
+        DateTime temp = DateTime.Now.Subtract(timeSpan);
         ICollection<Measurement> measurements =
-            await _greenhouseContext.Measurements!
-                .Where(m => m.GreenhouseId == gId && m.Timestamp > DateTime.Now - timeSpan)
-                // .Where(m => m.Timestamp >= DateTime.Now.Subtract(timeSpan) && m.GreenhouseId==gId)
+            await _greenhouseSystemContext.Measurements!
+                .Where(m => m.GreenhouseId == gId && m.Timestamp > temp)
                 .ToListAsync();
         return measurements;
     }
@@ -48,17 +48,17 @@ public class MeasurementDAO : IMeasurementService
         TimeSpan timeSpan = new TimeSpan(days,0,0,0);
         DateTime temp = DateTime.Now.Subtract(timeSpan);
         ICollection<Measurement> measurements =
-            await _greenhouseContext.Measurements!
-                .Where(m => m.Timestamp.CompareTo(temp)==1 && m.GreenhouseId==gId)
+            await _greenhouseSystemContext.Measurements!
+                .Where(m => m.Timestamp > temp && m.GreenhouseId==gId)
                 .ToListAsync();
         return measurements;
     }
 
     public async Task<ICollection<Measurement>> GetAllPerMonth(long gId, int month, int year)
     {
-        
+            
         ICollection<Measurement> measurements =
-            await _greenhouseContext.Measurements!
+            await _greenhouseSystemContext.Measurements!
                 .Where(m => m.Timestamp.Month == month && m.Timestamp.Year==year && m.GreenhouseId==gId)
                 .ToListAsync();
         return measurements;
@@ -67,7 +67,7 @@ public class MeasurementDAO : IMeasurementService
     public async Task<ICollection<Measurement>> GetAllPerYear(long gId, int year)
     {
         ICollection<Measurement> measurements =
-            await _greenhouseContext.Measurements!
+            await _greenhouseSystemContext.Measurements!
                 .Where(m => m.Timestamp.Year == year && m.GreenhouseId==gId)
                 .ToListAsync();
         return measurements;
@@ -78,6 +78,7 @@ public class MeasurementDAO : IMeasurementService
     public async Task AddMeasurementAsync(Measurement measurement)
     {
         await Console.Out.WriteLineAsync("MeasurementDAO: " + measurement +" added to DB");
-        // await _greenhouseContext.Measurements!.AddAsync(measurement);
+        await _greenhouseSystemContext.Measurements!.AddAsync(measurement);
+        await _greenhouseSystemContext.SaveChangesAsync();
     }
 }

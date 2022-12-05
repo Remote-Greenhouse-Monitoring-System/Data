@@ -7,4 +7,4 @@ build_property.InvariantGlobalization =
 build_property.PlatformNeutralAssembly = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = WsListenerBackgroundService
-build_property.ProjectDir = C:\Users\asus\VIA\Data\WsListenerBackgroundService\
+build_property.ProjectDir = /home/mantle/RiderProjects/Data/WsListenerBackgroundService/

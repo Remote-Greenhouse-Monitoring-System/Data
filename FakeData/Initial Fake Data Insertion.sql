@@ -1,4 +1,4 @@
-USE [GreenhouseTest]
+
 GO
 
 INSERT INTO [dbo].[Measurements]
@@ -17,7 +17,7 @@ INSERT INTO [dbo].[Measurements]
 		   10764,
 		   [Date Time, GMT +0100]
 	FROM
-		[dbo].[fakeDataTable]
+		[dbo].[001]
 		 
 GO
 

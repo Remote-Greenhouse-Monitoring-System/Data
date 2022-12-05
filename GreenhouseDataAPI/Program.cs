@@ -13,12 +13,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<GreenhouseContext>();
-// builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
+builder.Services.AddDbContext<GreenhouseSystemContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDAO>();
 builder.Services.AddScoped<IUserService, UserDAO>();
 builder.Services.AddScoped<IGreenHouseService, GreenHouseDAO>();
 builder.Services.AddScoped<IPlantProfileService, PlantProfileDAO>();
+builder.Services.AddScoped<IThresholdService, ThresholdDAO>();
 
 //WS-client
 builder.Services.AddScoped<IGreenhouseClient, GreenhouseClient>();

@@ -20,11 +20,14 @@ public class PlantProfileController : ControllerBase
     [Route("add/{uId:long}")]
     public async Task<ActionResult<PlantProfile>> CreatePlantProfile([FromRoute] long uId, [FromBody] PlantProfile plantP)
     {
-        try {
+        try
+        {
+            plantP.Threshold = new Threshold();
             PlantProfile newPlantProfile = await _plantProfileService.CreatePlantProfile(plantP);
             return Ok(newPlantProfile);
         }
         catch (Exception e) {
+            Console.WriteLine(e.InnerException.Message);
             return StatusCode(500,e.Message);
         }
     }

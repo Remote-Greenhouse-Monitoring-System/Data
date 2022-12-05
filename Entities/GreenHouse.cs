@@ -1,16 +1,18 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Entities; 
 
 public class GreenHouse {
     // Fields
-    public long GID { get; set; } 
-    public string name { get; set; }
-    public ICollection<Measurement> measurements { get; set; }
-    public ICollection<PlantProfile> plantProfiles { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; } 
+    public string Name { get; set; }
+    public ICollection<Measurement> measurements { get; set; } = new List<Measurement>();
+    public ICollection<PlantProfile> plantProfiles { get; set; } = new List<PlantProfile>();
 
     public GreenHouse(string name) {
         // ID SET IN DATABASE
-        this.name = name;
-        this.measurements = new List<Measurement>();
-        this.plantProfiles = new List<PlantProfile>();
+        this.Name = name;
+        
     }
 }

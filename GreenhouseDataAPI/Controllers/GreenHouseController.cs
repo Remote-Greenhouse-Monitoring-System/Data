@@ -6,7 +6,7 @@ using WebSocketClients.Interfaces;
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
-[Route("/greenhouses/")]
+[Route("/Greenhouses/")]
 
 public class GreenHouseController : ControllerBase {
 

@@ -1,41 +1,36 @@
 ﻿using Contracts;
 using Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace EFCData;
 
 public class PlantProfileDAO : IPlantProfileService
 {
-    private readonly GreenhouseContext _greenhouseContext;
+    private readonly GreenhouseSystemContext _greenhouseSystemContext;
 
-    public PlantProfileDAO(GreenhouseContext greenhouseContext)
+    public PlantProfileDAO(GreenhouseSystemContext greenhouseSystemContext)
     {
-        _greenhouseContext = greenhouseContext;
+        _greenhouseSystemContext = greenhouseSystemContext;
     }
     
     public async Task<PlantProfile> CreatePlantProfile(PlantProfile plantP)
     {
-        long largestId = -1;
-        if (_greenhouseContext.PlantProfiles.Any())
-        {
-            largestId = _greenhouseContext.PlantProfiles.Max(p => p.Id);
-        }
-
-        plantP.Id = ++largestId;
-        _greenhouseContext.PlantProfiles.Add(plantP);
-        await _greenhouseContext.SaveChangesAsync();
+        await _greenhouseSystemContext.Thresholds!.AddAsync(plantP.Threshold);
+        await _greenhouseSystemContext.PlantProfiles!.AddAsync(plantP);
+        await _greenhouseSystemContext.SaveChangesAsync();
         return plantP;
     }
 
     public async Task RemovePlantProfile(long pId)
     {
-        _greenhouseContext.PlantProfiles?.Remove(GetPlantProfileById(pId).Result);
-        await _greenhouseContext.SaveChangesAsync();
+        _greenhouseSystemContext.PlantProfiles?.Remove(GetPlantProfileById(pId).Result);
+        await _greenhouseSystemContext.SaveChangesAsync();
     }
 
     public async Task<PlantProfile> UpdatePlantProfile(PlantProfile plantP)
     {
-        _greenhouseContext.PlantProfiles?.Update(plantP);
-        await _greenhouseContext.SaveChangesAsync();
+        _greenhouseSystemContext.PlantProfiles?.Update(plantP);
+        await _greenhouseSystemContext.SaveChangesAsync();
         return plantP;
     }
 
@@ -45,20 +40,19 @@ public class PlantProfileDAO : IPlantProfileService
         throw new NotImplementedException();
     }
 
-    public Task<ICollection<PlantProfile>> GetPremadePlantProfiles()
+    public async Task<ICollection<PlantProfile>> GetPremadePlantProfiles()
     {
-        return Task.FromResult<ICollection<PlantProfile>>(_greenhouseContext.PlantProfiles.ToList());
+        return await _greenhouseSystemContext.PlantProfiles!.ToListAsync();
     }
 
     public async Task<PlantProfile> GetPlantProfileById(long pId)
     {
-        PlantProfile plantProfile = _greenhouseContext.PlantProfiles.First(p => p.Id == pId);
+        PlantProfile plantProfile = await _greenhouseSystemContext.PlantProfiles!.FirstAsync(p => p.Id == pId);
         return plantProfile;
     }
 
     public async Task ActivatePlantProfile(long pId)
     {
         PlantProfile plantProfileToAct = GetPlantProfileById(pId).Result;
-        plantProfileToAct.Activated = true;
     }
 }

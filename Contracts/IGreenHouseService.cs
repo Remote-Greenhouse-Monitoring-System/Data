@@ -3,7 +3,7 @@ using Entities;
 namespace Contracts; 
 
 public interface IGreenHouseService {
-    //public long uid { get; set; }
+    
     public Task<GreenHouse> CreateGreenHouse(long uid, GreenHouse greenHouse);
     public Task RemoveGreenHouse(long gid);
     public Task<GreenHouse> UpdateGreenHouse(GreenHouse greenHouse);

@@ -1,21 +1,25 @@
-﻿namespace Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace Entities;
 
 public class PlantProfile
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]    
     public long Id { get; set; }
     public string Name { get; set; }
-    public Boolean Activated { get; set; }
     public string Description { get; set; }
     public float OptimalTemperature { get; set; }
     public float OptimalHumidity { get; set; }
     public float OptimalCo2 { get; set; }
     public int OptimalLight { get; set; }
-
+    [JsonIgnore]
+    public Threshold Threshold { get; set; }
     
     public PlantProfile()
     {
     }
-
+    [JsonConstructor]
     public PlantProfile(string name, string description, float optimalTemperature, float optimalHumidity, float optimalCo2, int optimalLight)
     {
         Name = name;
@@ -24,8 +28,6 @@ public class PlantProfile
         OptimalHumidity = optimalHumidity;
         OptimalCo2 = optimalCo2;
         OptimalLight = optimalLight;
-
-        Activated = false;
-        Id = -1;
+        Threshold = new Threshold();
     }
 }

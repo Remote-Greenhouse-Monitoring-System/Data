@@ -1437,37 +1437,35 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\asus\\.nuget\\packages\\": {}
+    "/home/mantle/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\asus\\VIA\\Data\\WsListenerBackgroundService\\WsListenerBackgroundService.csproj",
+      "projectUniqueName": "/home/mantle/RiderProjects/Data/WsListenerBackgroundService/WsListenerBackgroundService.csproj",
       "projectName": "WsListenerBackgroundService",
-      "projectPath": "C:\\Users\\asus\\VIA\\Data\\WsListenerBackgroundService\\WsListenerBackgroundService.csproj",
-      "packagesPath": "C:\\Users\\asus\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\asus\\VIA\\Data\\WsListenerBackgroundService\\obj\\",
+      "projectPath": "/home/mantle/RiderProjects/Data/WsListenerBackgroundService/WsListenerBackgroundService.csproj",
+      "packagesPath": "/home/mantle/.nuget/packages/",
+      "outputPath": "/home/mantle/RiderProjects/Data/WsListenerBackgroundService/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\asus\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/mantle/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\asus\\VIA\\Data\\Contracts\\Contracts.csproj": {
-              "projectPath": "C:\\Users\\asus\\VIA\\Data\\Contracts\\Contracts.csproj"
+            "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj": {
+              "projectPath": "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj"
             },
-            "C:\\Users\\asus\\VIA\\Data\\WebSocketClients\\WebSocketClients.csproj": {
-              "projectPath": "C:\\Users\\asus\\VIA\\Data\\WebSocketClients\\WebSocketClients.csproj"
+            "/home/mantle/RiderProjects/Data/WebSocketClients/WebSocketClients.csproj": {
+              "projectPath": "/home/mantle/RiderProjects/Data/WebSocketClients/WebSocketClients.csproj"
             }
           }
         }
@@ -1493,8 +1491,7 @@
           "net47",
           "net471",
           "net472",
-          "net48",
-          "net481"
+          "net48"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -1503,7 +1500,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/6.0.111/RuntimeIdentifierGraph.json"
       }
     }
   }

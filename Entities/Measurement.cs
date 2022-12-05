@@ -1,7 +1,10 @@
-﻿namespace Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Entities;
 
 public class Measurement
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     public long GreenhouseId { get; set; }
     public float Temperature { get; set; }

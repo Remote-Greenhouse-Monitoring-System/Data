@@ -9,25 +9,25 @@ namespace EFCData;
 
 public class GreenHouseDAO : IGreenHouseService{
     
-    private readonly GreenhouseContext _greenhouseContext;
+    private readonly GreenhouseSystemContext _greenhouseSystemContext;
 
 
     public async Task<GreenHouse> CreateGreenHouse(long uid, GreenHouse greenHouse) {
-        await _greenhouseContext.GreenHouses!.AddAsync(greenHouse);
-        await _greenhouseContext.SaveChangesAsync();
-        return await _greenhouseContext.GreenHouses!.FindAsync(uid);
+        await _greenhouseSystemContext.GreenHouses!.AddAsync(greenHouse);
+        await _greenhouseSystemContext.SaveChangesAsync();
+        return await _greenhouseSystemContext.GreenHouses!.FindAsync(uid);
     }
 
     public async Task RemoveGreenHouse(long gid) {
-        GreenHouse greenHouse = await _greenhouseContext.GreenHouses!.FindAsync(gid);
-        _greenhouseContext.GreenHouses!.Remove(greenHouse);
-        await _greenhouseContext.SaveChangesAsync();
+        GreenHouse greenHouse = await _greenhouseSystemContext.GreenHouses!.FindAsync(gid);
+        _greenhouseSystemContext.GreenHouses!.Remove(greenHouse);
+        await _greenhouseSystemContext.SaveChangesAsync();
     }
 
     public async Task<GreenHouse> UpdateGreenHouse(GreenHouse greenHouse) {
-        _greenhouseContext.GreenHouses!.Update(greenHouse);
-        await _greenhouseContext.SaveChangesAsync();
-        return await _greenhouseContext.GreenHouses!.FindAsync(greenHouse.GID);
+        _greenhouseSystemContext.GreenHouses!.Update(greenHouse);
+        await _greenhouseSystemContext.SaveChangesAsync();
+        return await _greenhouseSystemContext.GreenHouses!.FindAsync(greenHouse.Id);
     }
 
     public async Task<ICollection<GreenHouse>> GetGreenHouses(long uid) {
@@ -42,6 +42,6 @@ public class GreenHouseDAO : IGreenHouseService{
     }
 
     public async Task<GreenHouse> GetGreenHouseById(long id) {
-        return _greenhouseContext.GreenHouses!.Find(id);
+        return _greenhouseSystemContext.GreenHouses!.Find(id);
     }
 }

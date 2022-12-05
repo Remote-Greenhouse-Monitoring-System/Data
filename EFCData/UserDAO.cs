@@ -6,33 +6,33 @@ namespace EFCData;
 
 public class UserDAO : IUserService
 {
-    private readonly GreenhouseContext _context;
+    private readonly GreenhouseSystemContext _systemContext;
 
-    public UserDAO(GreenhouseContext _context)
+    public UserDAO(GreenhouseSystemContext systemContext)
     {
-        this._context = _context;
+        this._systemContext = systemContext;
     }
 
     public async Task<User> GetUserByUsername(string username)
     {
-       return await _context.Users!.FirstAsync(u => u.Username == username);
+       return await _systemContext.Users!.FirstAsync(u => u.Username == username);
     }
 
     public async Task<User> GetUserById(long id)
     {
-        return await _context.Users!.FirstAsync(u => u.Id == id);
+        return await _systemContext.Users!.FirstAsync(u => u.Id == id);
     }
 
     public async Task<User> GetUserByEmail(string email)
     {
-        return await _context.Users!.FirstAsync(u => u.Email == email);
+        return await _systemContext.Users!.FirstAsync(u => u.Email == email);
     }
 
     public async Task<User> AddUser(User user)
     {
-        await _context.Users!.AddAsync(user);
-        await _context.SaveChangesAsync();
-        return await _context.Users!.FirstAsync(u => u.Email == user.Email);
+        await _systemContext.Users!.AddAsync(user);
+        await _systemContext.SaveChangesAsync();
+        return await _systemContext.Users!.FirstAsync(u => u.Email == user.Email);
 
 
     }
@@ -40,31 +40,31 @@ public class UserDAO : IUserService
     public async Task RemoveUser(long userId)
 
     {
-        User u = await _context.Users.FirstAsync(u => u.Id == userId);
+        User u = await _systemContext.Users.FirstAsync(u => u.Id == userId);
         await Task.Run((() =>
         {
-            _context.Users!.Remove(u);
+            _systemContext.Users!.Remove(u);
         }));
-        await _context.SaveChangesAsync();
+        await _systemContext.SaveChangesAsync();
         
     }
 
     public async Task<User> UpdateUser(User user)
     {
-        _context.Users!.Update(user);
+        _systemContext.Users!.Update(user);
 
-        await _context.SaveChangesAsync();
+        await _systemContext.SaveChangesAsync();
 
-        return await _context.Users!.FirstAsync(u => u.Email == user.Email);
+        return await _systemContext.Users!.FirstAsync(u => u.Email == user.Email);
     }
 
     public async Task<User> LogUserIn(string email, string password)
     {
-        User user=await _context.Users!.FirstAsync(u => u.Email == email);
+        User user=await _systemContext.Users!.FirstAsync(u => u.Email == email);
         if (user.Password == password)
         {
             return user;
         }
-        throw new Exception("The password provided does not match.");
+        throw new Exception("The credentials provided are incorrect.");
     }
 }
