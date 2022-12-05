@@ -15,7 +15,8 @@ public class PlantProfile
     public int OptimalLight { get; set; }
     [JsonIgnore]
     public Threshold Threshold { get; set; }
-    
+    [JsonIgnore]
+    public ICollection<Measurement>? Measurements { get; set; } = new List<Measurement>();
     public PlantProfile()
     {
     }

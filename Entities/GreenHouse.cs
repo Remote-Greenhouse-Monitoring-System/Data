@@ -1,18 +1,21 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Entities; 
 
 public class GreenHouse {
     // Fields
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; } 
+    public long Id { get; set; }  
     public string Name { get; set; }
-    public ICollection<Measurement> measurements { get; set; } = new List<Measurement>();
-    public ICollection<PlantProfile> plantProfiles { get; set; } = new List<PlantProfile>();
-
+    [JsonIgnore] 
+    public List<Measurement> Measurements { get; set; } = new List<Measurement>();
+    [JsonIgnore]
+    public PlantProfile? ActivePlantProfile{ get; set; } 
+    
+    [JsonConstructor]
     public GreenHouse(string name) {
-        // ID SET IN DATABASE
-        this.Name = name;
-        
+        Name = name;
+    
     }
 }
