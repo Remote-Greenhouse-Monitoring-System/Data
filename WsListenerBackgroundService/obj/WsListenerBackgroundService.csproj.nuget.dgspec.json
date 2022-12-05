@@ -1,0 +1,243 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/mantle/RiderProjects/Data/WsListenerBackgroundService/WsListenerBackgroundService.csproj": {}
+  },
+  "projects": {
+    "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj",
+        "projectName": "Contracts",
+        "projectPath": "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj",
+        "packagesPath": "/home/mantle/.nuget/packages/",
+        "outputPath": "/home/mantle/RiderProjects/Data/Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/mantle/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "/home/mantle/RiderProjects/Data/Entities/Entities.csproj": {
+                "projectPath": "/home/mantle/RiderProjects/Data/Entities/Entities.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/6.0.111/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/mantle/RiderProjects/Data/Entities/Entities.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/mantle/RiderProjects/Data/Entities/Entities.csproj",
+        "projectName": "Entities",
+        "projectPath": "/home/mantle/RiderProjects/Data/Entities/Entities.csproj",
+        "packagesPath": "/home/mantle/.nuget/packages/",
+        "outputPath": "/home/mantle/RiderProjects/Data/Entities/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/mantle/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/6.0.111/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/mantle/RiderProjects/Data/WebSocketClients/WebSocketClients.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/mantle/RiderProjects/Data/WebSocketClients/WebSocketClients.csproj",
+        "projectName": "WebSocketClients",
+        "projectPath": "/home/mantle/RiderProjects/Data/WebSocketClients/WebSocketClients.csproj",
+        "packagesPath": "/home/mantle/.nuget/packages/",
+        "outputPath": "/home/mantle/RiderProjects/Data/WebSocketClients/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/mantle/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj": {
+                "projectPath": "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/6.0.111/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/mantle/RiderProjects/Data/WsListenerBackgroundService/WsListenerBackgroundService.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/mantle/RiderProjects/Data/WsListenerBackgroundService/WsListenerBackgroundService.csproj",
+        "projectName": "WsListenerBackgroundService",
+        "projectPath": "/home/mantle/RiderProjects/Data/WsListenerBackgroundService/WsListenerBackgroundService.csproj",
+        "packagesPath": "/home/mantle/.nuget/packages/",
+        "outputPath": "/home/mantle/RiderProjects/Data/WsListenerBackgroundService/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/mantle/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj": {
+                "projectPath": "/home/mantle/RiderProjects/Data/Contracts/Contracts.csproj"
+              },
+              "/home/mantle/RiderProjects/Data/WebSocketClients/WebSocketClients.csproj": {
+                "projectPath": "/home/mantle/RiderProjects/Data/WebSocketClients/WebSocketClients.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/6.0.111/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

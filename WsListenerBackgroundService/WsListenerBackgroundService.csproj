@@ -15,20 +15,4 @@
       <ProjectReference Include="..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\WebSocketClients\WebSocketClients.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="obj\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="obj\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="obj\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Remove="obj\**" />
-    </ItemGroup>
 </Project>

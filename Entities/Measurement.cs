@@ -25,4 +25,9 @@ public class Measurement
         Light = light;
         Timestamp = DateTime.Now;
     }
+
+    public override string ToString()
+    {
+        return "M-"+Id+" : temperature="+Temperature+"C, humidity="+Humidity+"%, Co2="+Co2;
+    }
 }
