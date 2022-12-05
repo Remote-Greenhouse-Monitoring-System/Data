@@ -16,5 +16,9 @@
       <ProjectReference Include="..\WebSocketClients\WebSocketClients.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="obj\Debug\net6.0" />
+    </ItemGroup>
+
     <PropertyGroup><ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles></PropertyGroup>
 </Project>

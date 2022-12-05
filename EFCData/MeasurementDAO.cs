@@ -77,8 +77,8 @@ public class MeasurementDAO : IMeasurementService
     //upload:
     public async Task AddMeasurementAsync(Measurement measurement)
     {
-        await Console.Out.WriteLineAsync("MeasurementDAO: " + measurement +" added to DB");
         await _greenhouseSystemContext.Measurements!.AddAsync(measurement);
         await _greenhouseSystemContext.SaveChangesAsync();
+        await Console.Out.WriteLineAsync("MeasurementDAO: " + measurement +" added to DB");
     }
 }

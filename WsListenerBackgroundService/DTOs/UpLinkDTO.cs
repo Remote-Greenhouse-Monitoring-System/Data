@@ -8,5 +8,6 @@ public class UpLinkDTO
     public bool ack { get; set; }
     public int fcnt { get; set; }
     public int port { get; set; }
+    public int seqno { get; set; }
     public string data { get; set; }
 }
