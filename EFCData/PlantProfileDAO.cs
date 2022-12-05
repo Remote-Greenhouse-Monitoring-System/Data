@@ -16,6 +16,7 @@ public class PlantProfileDAO : IPlantProfileService
     public async Task<PlantProfile> CreatePlantProfile(PlantProfile plantP)
     {
         await _greenhouseSystemContext.Thresholds!.AddAsync(plantP.Threshold);
+        
         await _greenhouseSystemContext.PlantProfiles!.AddAsync(plantP);
         await _greenhouseSystemContext.SaveChangesAsync();
         return plantP;
