@@ -15,4 +15,6 @@
       <ProjectReference Include="..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\WebSocketClients\WebSocketClients.csproj" />
     </ItemGroup>
+
+    <PropertyGroup><ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles></PropertyGroup>
 </Project>
