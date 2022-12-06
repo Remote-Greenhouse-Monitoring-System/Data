@@ -1,13 +1,14 @@
 using Contracts;
 using Entities;
+using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using WebSocketClients.Interfaces;
-
+using GreenhouseDataAPI.Attributes;
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
 [Route("/Greenhouses/")]
-
+[ApiKey]
 public class GreenHouseController : ControllerBase {
 
     private readonly IGreenHouseService _greenHouseService;

@@ -1,12 +1,13 @@
 ﻿using Contracts;
 using Entities;
+using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
 [Route("/PlantProfiles/")]
-
+[ApiKey]
 public class PlantProfileController : ControllerBase
 {
     private readonly IPlantProfileService _plantProfileService;

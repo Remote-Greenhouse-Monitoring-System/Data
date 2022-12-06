@@ -1,6 +1,7 @@
 using Contracts;
 using EFCData;
 using GreenhouseDataAPI;
+using Microsoft.OpenApi.Models;
 using WebSocketClients.Clients;
 using WebSocketClients.Interfaces;
 using WsListenerBackgroundService;
@@ -12,8 +13,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<GreenhouseSystemContext>();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api Key Auth", Version = "v1" });
+    c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        Description = "ApiKey must appear in header",
+        Type = SecuritySchemeType.ApiKey,
+        Name = "ApiKey",
+        In = ParameterLocation.Header,
+        Scheme = "ApiKeyScheme"
+    });
+    var key = new OpenApiSecurityScheme()
+    {
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "ApiKey"
+        },
+        In = ParameterLocation.Header
+    };
+    var requirement = new OpenApiSecurityRequirement
+    {
+        { key, new List<string>() }
+    };
+    c.AddSecurityRequirement(requirement);
+});builder.Services.AddScoped<GreenhouseSystemContext>();
 builder.Services.AddDbContext<GreenhouseSystemContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDao>();
 builder.Services.AddScoped<IUserService, UserDao>();

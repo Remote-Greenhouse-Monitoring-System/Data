@@ -1,11 +1,13 @@
 ﻿using Contracts;
 using Entities;
+using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
 [Route("/Measurement/")]
+[ApiKey]
 public class MeasurementController : ControllerBase
 {
     private readonly IMeasurementService? _measurementService;
