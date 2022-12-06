@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EFCData;
 
-public class UserDAO : IUserService
+public class UserDao : IUserService
 {
     private readonly GreenhouseSystemContext _systemContext;
 
-    public UserDAO(GreenhouseSystemContext systemContext)
+    public UserDao(GreenhouseSystemContext systemContext)
     {
         this._systemContext = systemContext;
     }

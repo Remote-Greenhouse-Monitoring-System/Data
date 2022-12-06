@@ -94,6 +94,23 @@ public class GreenHouseController : ControllerBase {
             return StatusCode(500, e.Message);
         }
     }
+    
+    [HttpGet]
+    [Route("lastMeasurementGreenhouse")]
+    public async Task<ActionResult<GreenHouse>> GetLastMeasurementGreenhouse()
+    {
+        try
+        {
+            GreenHouse greenHouse = await _greenHouseService.GetLastMeasurementGreenhouse();
+            
+            return Ok(greenHouse);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, e.Message);
+        }
+    }
 
 }
     

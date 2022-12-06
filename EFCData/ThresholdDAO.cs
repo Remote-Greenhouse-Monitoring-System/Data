@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EFCData;
 
-public class ThresholdDAO : IThresholdService
+public class ThresholdDao : IThresholdService
 {
     private GreenhouseSystemContext _context;
 
-    public ThresholdDAO(GreenhouseSystemContext context)
+    public ThresholdDao(GreenhouseSystemContext context)
     {
         _context = context;
     }

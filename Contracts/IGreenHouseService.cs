@@ -8,5 +8,6 @@ public interface IGreenHouseService {
     public Task RemoveGreenHouse(long gid);
     public Task UpdateGreenHouse(GreenHouse greenHouse);
     public Task<ICollection<GreenHouse>> GetGreenHouses(long uid);
-    
+
+    Task<GreenHouse> GetLastMeasurementGreenhouse();
 }

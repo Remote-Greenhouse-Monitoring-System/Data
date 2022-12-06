@@ -3,6 +3,7 @@ using System.Text;
 using Contracts;
 using Entities;
 using Newtonsoft.Json;
+using WebSocketClients.DTOs;
 using WebSocketClients.Interfaces;
 
 namespace WebSocketClients.Clients;
@@ -41,13 +42,13 @@ public class GreenhouseClient : IGreenhouseClient
         await ConnectClientAsync();
         
         //create payloadDTO
-        DownLinkDTO downLinkDto = new ()
+        DownLinkDto downLinkDto = new ()
         {
-            cmd = "tx",
-            EUI = Eui,
-            port = 2,
-            confirmed = false,
-            data = "E803"
+            Cmd = "tx",
+            Eui = Eui,
+            Port = 2,
+            Confirmed = false,
+            Data = "E803"
         };
         string payloadJson = JsonConvert.SerializeObject(downLinkDto);
         
@@ -64,7 +65,7 @@ public class GreenhouseClient : IGreenhouseClient
         // UpLinkDTO? receivedPayload = JsonConvert.DeserializeObject<UpLinkDTO>(strResult);
     }
 
-    public Task SetThresholdToGreenhouse(long gid, Threshold threshold)
+    public  Task SetThresholdToGreenhouse(long gid, Threshold threshold)
     {
         throw new NotImplementedException();
     }

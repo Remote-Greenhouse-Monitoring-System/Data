@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EFCData;
 
-public class MeasurementDAO : IMeasurementService
+public class MeasurementDao : IMeasurementService
 {
     private readonly GreenhouseSystemContext _greenhouseSystemContext;
 
-    public MeasurementDAO(GreenhouseSystemContext greenhouseSystemContext)
+    public MeasurementDao(GreenhouseSystemContext greenhouseSystemContext)
     {
         _greenhouseSystemContext = greenhouseSystemContext;
     }

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace EFCData;
 
-public class PlantProfileDAO : IPlantProfileService
+public class PlantProfileDao : IPlantProfileService
 {
     private readonly GreenhouseSystemContext _greenhouseSystemContext;
 
-    public PlantProfileDAO(GreenhouseSystemContext greenhouseSystemContext)
+    public PlantProfileDao(GreenhouseSystemContext greenhouseSystemContext)
     {
         _greenhouseSystemContext = greenhouseSystemContext;
     }

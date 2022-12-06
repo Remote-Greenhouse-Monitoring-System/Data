@@ -1,13 +1,13 @@
 ﻿namespace WebSocketClients.Clients;
 
-public class UpLinkDTO
+public class UpLinkDto
 {
-    public string cmd { get; set; }
-    public string EUI { get; set; }
-    public long ts { get; set; }
-    public bool ack { get; set; }
-    public int fcnt { get; set; }
-    public int port { get; set; }
-    public int seqno { get; set; }
-    public string data { get; set; }
+    public string Cmd { get; set; }
+    public string Eui { get; set; }
+    public long Ts { get; set; }
+    public bool Ack { get; set; }
+    public int Fcnt { get; set; }
+    public int Port { get; set; }
+    public int Seqno { get; set; }
+    public string Data { get; set; }
 }
