@@ -17,6 +17,7 @@ public class MeasurementDAO : IMeasurementService
     {
         ICollection<Measurement> measurements = await _greenhouseSystemContext.Measurements!.Take(amount)
             .Where(m => m.GreenhouseId == gId)
+            .OrderBy(m=>m.Timestamp)
             .ToListAsync();
         return measurements ;
     }
@@ -75,8 +76,15 @@ public class MeasurementDAO : IMeasurementService
 
     
     //upload:
-    public async Task AddMeasurementAsync(Measurement measurement)
+    public async Task AddMeasurement(Measurement measurement, long gId, long pId)
     {
+        GreenHouse greenHouse = await _greenhouseSystemContext.GreenHouses!.FirstAsync(g=>g.Id==gId);
+        greenHouse.Measurements!.Add(measurement);
+         _greenhouseSystemContext.Update(greenHouse);
+         
+         PlantProfile profile = await _greenhouseSystemContext.PlantProfiles!.FirstAsync(p => p.Id == pId);
+         profile.Measurements!.Add(measurement);
+         _greenhouseSystemContext.Update(profile);
         await _greenhouseSystemContext.Measurements!.AddAsync(measurement);
         await _greenhouseSystemContext.SaveChangesAsync();
         await Console.Out.WriteLineAsync("MeasurementDAO: " + measurement +" added to DB");

@@ -13,7 +13,7 @@ public class User
     [JsonIgnore]
     public ICollection<GreenHouse>? GreenHouses { get; set; } = new List<GreenHouse>();
 
-    [JsonIgnore] public ICollection<PlantProfile> PlantProfiles { get; set; } = new List<PlantProfile>();
+    [JsonIgnore] public ICollection<PlantProfile>? PlantProfiles { get; set; } = new List<PlantProfile>();
     public User()
     {
     }

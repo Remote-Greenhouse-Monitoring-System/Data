@@ -23,11 +23,10 @@ public class PlantProfileController : ControllerBase
         try
         {
             plantP.Threshold = new Threshold();
-            PlantProfile newPlantProfile = await _plantProfileService.CreatePlantProfile(plantP);
+            PlantProfile newPlantProfile = await _plantProfileService.AddPlantProfile(plantP,uId);
             return Ok(newPlantProfile);
         }
         catch (Exception e) {
-            Console.WriteLine(e.InnerException.Message);
             return StatusCode(500,e.Message);
         }
     }
@@ -57,26 +56,25 @@ public class PlantProfileController : ControllerBase
             return StatusCode(500,e.Message);
         }
     }
-/*
-//User not implemented yet
+
     [HttpGet]
-    [Route("UserPlantP/{uId:long}")]
+    [Route("plantProfilesForUser/{uId:long}")]
     public async Task<ActionResult<ICollection<PlantProfile>>> GetUserPlantProfile([FromRoute] long uId)
     {
         try {
-            ICollection<PlantProfile> plantProfiles = await _plantProfileService.GetUserPlantProfile(uId);
+            ICollection<PlantProfile> plantProfiles = await _plantProfileService.GetUserPlantProfiles(uId);
             return Ok(plantProfiles);
         }
         catch (Exception e) {
             return StatusCode(500,e.Message);
         }
     }
-*/
+
     [HttpGet]
     public async Task<ActionResult<ICollection<PlantProfile>>> GetPremadePlantProfiles()
     {
         try {
-            ICollection<PlantProfile> pPlantProfiles = await _plantProfileService.GetPremadePlantProfiles();
+            ICollection<PlantProfile> pPlantProfiles = await _plantProfileService.GetPreMadePlantProfiles();
             return Ok(pPlantProfiles);
         }
         catch (Exception e) {
@@ -98,16 +96,30 @@ public class PlantProfileController : ControllerBase
     }
 
     [HttpPatch]
-    [Route("ActPP/{pId:long}")]
-    public async Task<ActionResult> ActivatePlantProfile([FromRoute] long pId)
+    [Route("activate/{pId:long}/{gId:long}")]
+    public async Task<ActionResult> ActivatePlantProfile([FromRoute] long pId, [FromRoute] long gId)
     {
         try {
-            await _plantProfileService.ActivatePlantProfile(pId);
+            await _plantProfileService.ActivatePlantProfile(pId,gId);
             return Ok();
         }
         catch (Exception e) {
             return StatusCode(500,e.Message);
         }
     }
+    
+    [HttpGet]
+    [Route("activated/{gId:long}")]
+    public async Task<ActionResult<PlantProfile>> GetActivePlantProfileOnGreenhouse([FromRoute] long gId)
+    {
+        try {
+            PlantProfile plantProfile = await _plantProfileService.GetActivePlantProfileOnGreenhouse(gId);
+            return Ok(plantProfile);
+        }
+        catch (Exception e) {
+            return StatusCode(500,e.Message);
+        }
+    }
+
 
 }

@@ -25,27 +25,27 @@ public class GreenHouseController : ControllerBase {
     public async Task<ActionResult<List<GreenHouse>>> GetGreenHouses([FromRoute] long uid) {
         try {
             ICollection<GreenHouse> greenHouses = await _greenHouseService.GetGreenHouses(uid);
-            // Change the service to return only the greenhouses of the user ?
             return Ok(greenHouses);
         }
         catch (Exception ex) {
-            return BadRequest(ex.Message);
+            return StatusCode(500,ex.Message);
         }
 
     }
+    
     
     //-	Adds a greenhouse object for the user with the queried username
     //-	Argument: a greenhouse object
     
     [HttpPost]
     [Route("{uid:long}")]
-    public async Task<ActionResult<GreenHouse>> CreateGreenHouse([FromRoute] long uid, [FromBody] GreenHouse greenHouse) {
+    public async Task<ActionResult> CreateGreenHouse([FromRoute] long uid, [FromBody] GreenHouse greenHouse) {
         try {
-            GreenHouse newGreenHouse = await _greenHouseService.CreateGreenHouse(uid, greenHouse);
-            return Ok(newGreenHouse);
+            await _greenHouseService.AddGreenHouse(uid, greenHouse);
+            return Ok();
         }
         catch (Exception ex) {
-            return BadRequest(ex.Message);
+            return StatusCode(500,ex.Message);
         }
     }
     
@@ -53,13 +53,13 @@ public class GreenHouseController : ControllerBase {
     //-	Argument: a greenhouse object
 
     [HttpPatch]
-    public async Task<ActionResult<GreenHouse>> UpdateGreenHouse([FromBody] GreenHouse greenHouse) {
+    public async Task<ActionResult> UpdateGreenHouse([FromBody] GreenHouse greenHouse) {
         try {
-            GreenHouse updatedGreenHouse = await _greenHouseService.UpdateGreenHouse(greenHouse);
-            return Ok(updatedGreenHouse);
+            await _greenHouseService.UpdateGreenHouse(greenHouse);
+            return Ok();
         }
         catch (Exception ex) {
-            return BadRequest(ex.Message);
+            return StatusCode(500,ex.Message);
         }
     }
     
@@ -73,7 +73,7 @@ public class GreenHouseController : ControllerBase {
             return Ok();
         }
         catch (Exception ex) {
-            return BadRequest(ex.Message);
+            return StatusCode(500,ex.Message);
         }
     }
     

@@ -40,7 +40,7 @@ public class UserDAO : IUserService
     public async Task RemoveUser(long userId)
 
     {
-        User u = await _systemContext.Users.FirstAsync(u => u.Id == userId);
+        User u = await _systemContext.Users!.FirstAsync(u => u.Id == userId);
         await Task.Run((() =>
         {
             _systemContext.Users!.Remove(u);
@@ -58,6 +58,8 @@ public class UserDAO : IUserService
         return await _systemContext.Users!.FirstAsync(u => u.Email == user.Email);
     }
 
+    //TODO Add some kind of encryption to the password 
+    //Use PasswordHasher
     public async Task<User> LogUserIn(string email, string password)
     {
         User user=await _systemContext.Users!.FirstAsync(u => u.Email == email);

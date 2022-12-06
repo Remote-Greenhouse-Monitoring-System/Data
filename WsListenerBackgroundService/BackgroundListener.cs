@@ -66,12 +66,14 @@ public class BackgroundListener : BackgroundService
                 using (IServiceScope scope = _serviceProvider.CreateScope())
                 {
                     IMeasurementService measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
-                    await measurementService.AddMeasurementAsync(m);
+                    await measurementService.AddMeasurement(m,1,1);
                 }
             }
 
 
             //ToDo: when to break the loop, close the connection and kill the thread? never?
+            //it will close itself when the cancellation token is fired, meaning when the process is killed, aka the server in our case,
+            //yeah it listens forever, because it has to
         }
         
         //close connection
