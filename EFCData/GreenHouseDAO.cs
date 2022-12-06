@@ -110,6 +110,45 @@ public class GreenHouseDao : IGreenHouseService{
         return greenHouse;
     }
 
+    public async Task<ICollection<GreenhouseLastMeasurement>> GetGreenhousesWithMeasurement()
+    {
+        ICollection<GreenHouse> greenhouses=new List<GreenHouse>();
+        ICollection<GreenhouseLastMeasurement> greenhousesWithLastMeasurements=new List<GreenhouseLastMeasurement>();
+
+        try
+        {
+            greenhouses= await _greenhouseSystemContext.GreenHouses!
+                .Include(g => g.Measurements)
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("No greenhouses found.");
+        }
+
+        foreach (var greenHouse in greenhouses)
+        {
+            if (greenHouse.Measurements == null || greenHouse.Measurements!.Count == 0)
+            {
+                greenhousesWithLastMeasurements.Add(new GreenhouseLastMeasurement(greenHouse.Id,greenHouse.Name, new Measurement()));
+            }
+            else
+            {
+                greenhousesWithLastMeasurements
+                    .Add(new GreenhouseLastMeasurement(greenHouse.Id,
+                        greenHouse.Name,
+                        greenHouse.Measurements!
+                            .OrderBy(m=>m.Timestamp)
+                            .First()));
+            }
+        
+        }
+
+        return greenhousesWithLastMeasurements;
+
+    }
+
     public async Task<GreenHouse> GetGreenHouseById(long id)
     {
         GreenHouse greenHouse;

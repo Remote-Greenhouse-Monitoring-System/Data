@@ -10,4 +10,5 @@ public interface IGreenHouseService {
     public Task<ICollection<GreenHouse>> GetGreenHouses(long uid);
 
     Task<GreenHouse> GetLastMeasurementGreenhouse();
+    Task<ICollection<GreenhouseLastMeasurement>> GetGreenhousesWithMeasurement();
 }

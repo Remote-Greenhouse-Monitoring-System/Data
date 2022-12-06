@@ -111,6 +111,22 @@ public class GreenHouseController : ControllerBase {
             return StatusCode(500, e.Message);
         }
     }
-
+    
+    [HttpGet]
+    [Route("greenhousesWithLastMeasurements")]
+    public async Task<ActionResult<ICollection<GreenhouseLastMeasurement>>> GetGreenhouesWithLastMeasurements()
+    {
+        try
+        {
+            ICollection<GreenhouseLastMeasurement> greenhousesWithMeasurement = await _greenHouseService.GetGreenhousesWithMeasurement();
+            
+            return Ok(greenhousesWithMeasurement);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, e.Message);
+        }
+    }
 }
     

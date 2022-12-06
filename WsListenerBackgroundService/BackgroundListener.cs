@@ -60,7 +60,7 @@ public class BackgroundListener : BackgroundService
             Console.WriteLine(strResult);
             var upLinkDto = JsonConvert.DeserializeObject<UpLinkDto>(strResult);
             if (upLinkDto is not { Cmd: "rx" }) continue;   //skip to next iteration if uplinkDto is null or 'cmd' is not "rx"
-            Measurement? m = ConvertUplinkDTOToMeasurement(upLinkDto);
+            Measurement? m = ConvertUplinkDtoToMeasurement(upLinkDto);
             if (m != null)
             {
                 using (IServiceScope scope = _serviceProvider.CreateScope())
@@ -87,7 +87,7 @@ public class BackgroundListener : BackgroundService
     
     
     
-    private static Measurement? ConvertUplinkDTOToMeasurement(UpLinkDto upLinkDto)
+    private static Measurement? ConvertUplinkDtoToMeasurement(UpLinkDto upLinkDto)
     {
         Measurement? m = null;
         if (!String.IsNullOrEmpty(upLinkDto.Data))
