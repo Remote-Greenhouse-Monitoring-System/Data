@@ -78,11 +78,30 @@ public class MeasurementDao : IMeasurementService
     //upload:
     public async Task AddMeasurement(Measurement measurement, long gId, long pId)
     {
-        GreenHouse greenHouse = await _greenhouseSystemContext.GreenHouses!.FirstAsync(g=>g.Id==gId);
+        GreenHouse greenHouse;
+        try
+        {
+            greenHouse=await _greenhouseSystemContext.GreenHouses!.FirstAsync(g=>g.Id==gId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Greenhouse not found.");
+        }
+        
         greenHouse.Measurements!.Add(measurement);
          _greenhouseSystemContext.Update(greenHouse);
-         
-         PlantProfile profile = await _greenhouseSystemContext.PlantProfiles!.FirstAsync(p => p.Id == pId);
+
+         PlantProfile profile;
+         try
+         {
+             profile=await _greenhouseSystemContext.PlantProfiles!.FirstAsync(p => p.Id == pId);
+         }
+         catch (Exception e)
+         {
+             Console.WriteLine(e);
+             throw new Exception("Plant profile not found.");
+         }
          profile.Measurements!.Add(measurement);
          _greenhouseSystemContext.Update(profile);
         await _greenhouseSystemContext.Measurements!.AddAsync(measurement);

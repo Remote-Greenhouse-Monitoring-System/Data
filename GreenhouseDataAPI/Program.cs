@@ -13,9 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+// Adds api key authorization in Swagger UI 
+
+// Requires a header with a key-value pair of "ApiKey":"{value}"
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api Key Auth", Version = "v1" });
+    
     c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
     {
         Description = "ApiKey must appear in header",
@@ -24,6 +29,7 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Scheme = "ApiKeyScheme"
     });
+    
     var key = new OpenApiSecurityScheme()
     {
         Reference = new OpenApiReference
@@ -33,22 +39,23 @@ builder.Services.AddSwaggerGen(c =>
         },
         In = ParameterLocation.Header
     };
+    
     var requirement = new OpenApiSecurityRequirement
     {
         { key, new List<string>() }
     };
+    
     c.AddSecurityRequirement(requirement);
-});builder.Services.AddScoped<GreenhouseSystemContext>();
+});
+builder.Services.AddScoped<GreenhouseSystemContext>();
 builder.Services.AddDbContext<GreenhouseSystemContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDao>();
 builder.Services.AddScoped<IUserService, UserDao>();
 builder.Services.AddScoped<IGreenHouseService, GreenHouseDao>();
 builder.Services.AddScoped<IPlantProfileService, PlantProfileDao>();
 builder.Services.AddScoped<IThresholdService, ThresholdDao>();
-
 //WS-client
 builder.Services.AddScoped<IGreenhouseClient, GreenhouseClient>();
-
 // builder.Services.AddHostedService(sp=>sp.GetService<BackgroundListener>());
 // builder.Services.AddSingleton<BackgroundListener>();
 builder.Services.AddHostedService<BackgroundListener>();

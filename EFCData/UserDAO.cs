@@ -15,17 +15,41 @@ public class UserDao : IUserService
 
     public async Task<User> GetUserByUsername(string username)
     {
-       return await _systemContext.Users!.FirstAsync(u => u.Username == username);
+        try
+        {
+            return await _systemContext.Users!.FirstAsync(u => u.Username == username);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("There is no user with that username.");
+        }
     }
 
     public async Task<User> GetUserById(long id)
     {
-        return await _systemContext.Users!.FirstAsync(u => u.Id == id);
+        try
+        {
+            return await _systemContext.Users!.FirstAsync(u => u.Id == id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("There is no user with that id.");
+        }
     }
 
     public async Task<User> GetUserByEmail(string email)
     {
-        return await _systemContext.Users!.FirstAsync(u => u.Email == email);
+        try
+        {
+            return await _systemContext.Users!.FirstAsync(u => u.Email == email);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("There is no user with that email.");
+        }
     }
 
     public async Task<User> AddUser(User user)
@@ -40,18 +64,31 @@ public class UserDao : IUserService
     public async Task RemoveUser(long userId)
 
     {
-        User u = await _systemContext.Users!.FirstAsync(u => u.Id == userId);
-        await Task.Run((() =>
+        User user;
+        try
         {
-            _systemContext.Users!.Remove(u);
-        }));
+            user= await _systemContext.Users!.FirstAsync(u => u.Id == userId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("There is no user with that id.");
+        }
+        _systemContext.Users!.Remove(user);
         await _systemContext.SaveChangesAsync();
-        
     }
 
     public async Task<User> UpdateUser(User user)
     {
-        _systemContext.Users!.Update(user);
+        try
+        {
+            _systemContext.Users!.Update(user);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Something wrong happened while updating the user.");
+        }
 
         await _systemContext.SaveChangesAsync();
 
@@ -62,7 +99,16 @@ public class UserDao : IUserService
     //Use PasswordHasher
     public async Task<User> LogUserIn(string email, string password)
     {
-        User user=await _systemContext.Users!.FirstAsync(u => u.Email == email);
+        User user;
+        try
+        {
+            user=await _systemContext.Users!.FirstAsync(u => u.Email == email);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("User with the provided email not found");
+        }
         if (user.Password == password)
         {
             return user;
