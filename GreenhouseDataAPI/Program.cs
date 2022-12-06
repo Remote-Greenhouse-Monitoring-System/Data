@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 // Requires a header with a key-value pair of "ApiKey":"{value}"
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api Key Auth", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Greenhouse Monitoring System Data Tier API", Version = "v1" });
     
     c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
     {
