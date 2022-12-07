@@ -1,10 +1,12 @@
 using Contracts;
 using Entities;
+using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenhouseDataAPI.Controllers;
 [ApiController]
 [Route("/Users/")]
+[ApiKey]
 public class UserController : ControllerBase
 {
     private IUserService _service;

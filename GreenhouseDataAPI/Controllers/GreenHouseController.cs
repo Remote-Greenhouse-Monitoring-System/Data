@@ -1,13 +1,14 @@
 using Contracts;
 using Entities;
+using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using WebSocketClients.Interfaces;
-
+using GreenhouseDataAPI.Attributes;
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
 [Route("/Greenhouses/")]
-
+[ApiKey]
 public class GreenHouseController : ControllerBase {
 
     private readonly IGreenHouseService _greenHouseService;
@@ -94,6 +95,39 @@ public class GreenHouseController : ControllerBase {
             return StatusCode(500, e.Message);
         }
     }
-
+    
+    [HttpGet]
+    [Route("lastMeasurementGreenhouse")]
+    public async Task<ActionResult<GreenHouse>> GetLastMeasurementGreenhouse()
+    {
+        try
+        {
+            GreenHouse greenHouse = await _greenHouseService.GetLastMeasurementGreenhouse();
+            
+            return Ok(greenHouse);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    [HttpGet]
+    [Route("greenhousesWithLastMeasurements/{uId:long}")]
+    public async Task<ActionResult<ICollection<GreenhouseLastMeasurement>>> GetGreenhouesWithLastMeasurements(long uId)
+    {
+        try
+        {
+            ICollection<GreenhouseLastMeasurement> greenhousesWithMeasurement = await _greenHouseService.GetGreenhousesWithLastMeasurement(uId);
+            
+            return Ok(greenhousesWithMeasurement);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, e.Message);
+        }
+    }
 }
     

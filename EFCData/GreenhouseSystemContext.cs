@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace EFCData;
 
@@ -11,11 +12,17 @@ public class GreenhouseSystemContext : DbContext
     public DbSet<PlantProfile>? PlantProfiles { get; set; } = null!;
     public DbSet<User>? Users { get; set; } = null!;
     public DbSet<Threshold>? Thresholds { get; set; } = null!;
-    
+    public static IConfiguration Configuration { get; set; }
+
+    public GreenhouseSystemContext(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         
-        optionsBuilder.UseSqlServer(@"Server=tcp:greenhouse-db-server.database.windows.net,1433;Initial Catalog=GreenhouseSystemDB;Persist Security Info=False;User ID=viasep4;Password=Vanaheim_Perplex1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;");
+        optionsBuilder.UseSqlServer(Configuration.GetConnectionString("GreenhouseDB"));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

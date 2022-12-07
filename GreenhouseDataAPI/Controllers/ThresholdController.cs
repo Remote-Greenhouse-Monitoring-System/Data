@@ -1,10 +1,12 @@
 using Contracts;
 using Entities;
+using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GreenhouseDataAPI.Controllers;
 [ApiController]
 [Route("/Thresholds/")]
+[ApiKey]
 public class ThresholdController : ControllerBase
 {
     private IThresholdService _service;
