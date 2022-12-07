@@ -114,12 +114,12 @@ public class GreenHouseController : ControllerBase {
     }
     
     [HttpGet]
-    [Route("greenhousesWithLastMeasurements")]
-    public async Task<ActionResult<ICollection<GreenhouseLastMeasurement>>> GetGreenhouesWithLastMeasurements()
+    [Route("greenhousesWithLastMeasurements/{uId:long}")]
+    public async Task<ActionResult<ICollection<GreenhouseLastMeasurement>>> GetGreenhouesWithLastMeasurements(long uId)
     {
         try
         {
-            ICollection<GreenhouseLastMeasurement> greenhousesWithMeasurement = await _greenHouseService.GetGreenhousesWithMeasurement();
+            ICollection<GreenhouseLastMeasurement> greenhousesWithMeasurement = await _greenHouseService.GetGreenhousesWithLastMeasurement(uId);
             
             return Ok(greenhousesWithMeasurement);
         }
