@@ -1,6 +1,6 @@
-﻿namespace WebSocketClients.Clients;
+﻿namespace WsListenerBackgroundService.DTOs;
 
-public class UpLinkDto
+public class UpLinkDTO
 {
     public string Cmd { get; set; }
     public string Eui { get; set; }

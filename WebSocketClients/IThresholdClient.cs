@@ -2,7 +2,7 @@
 
 namespace WebSocketClients.Interfaces;
 
-public interface IGreenhouseClient
+public interface IThresholdClient
 {
     Task WsClientTest();
     Task SetThresholdToGreenhouse(long gid, Threshold threshold);

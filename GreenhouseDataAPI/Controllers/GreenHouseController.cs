@@ -12,11 +12,11 @@ namespace GreenhouseDataAPI.Controllers;
 public class GreenHouseController : ControllerBase {
 
     private readonly IGreenHouseService _greenHouseService;
-    private IGreenhouseClient _greenhouseClient;
+    private IThresholdClient _thresholdClient;
 
-    public GreenHouseController(IGreenHouseService greenHouseService, IGreenhouseClient greenhouseClient) {
+    public GreenHouseController(IGreenHouseService greenHouseService, IThresholdClient thresholdClient) {
         _greenHouseService = greenHouseService;
-        _greenhouseClient = greenhouseClient;
+        _thresholdClient = thresholdClient;
     }
     
     
@@ -86,7 +86,7 @@ public class GreenHouseController : ControllerBase {
     {
         try
         {
-            await _greenhouseClient.WsClientTest();
+            await _thresholdClient.WsClientTest();
             return Ok();
         }
         catch (Exception e)

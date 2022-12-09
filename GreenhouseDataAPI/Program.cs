@@ -55,7 +55,8 @@ builder.Services.AddScoped<IGreenHouseService, GreenHouseDao>();
 builder.Services.AddScoped<IPlantProfileService, PlantProfileDao>();
 builder.Services.AddScoped<IThresholdService, ThresholdDao>();
 //WS-client
-builder.Services.AddScoped<IGreenhouseClient, GreenhouseClient>();
+builder.Services.AddScoped<IThresholdClient, ThresholdClient>();
+//Ws-listener
 // builder.Services.AddHostedService(sp=>sp.GetService<BackgroundListener>());
 // builder.Services.AddSingleton<BackgroundListener>();
 builder.Services.AddHostedService<BackgroundListener>();
