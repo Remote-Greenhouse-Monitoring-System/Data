@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entiti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WsListenerBackgroundService", "WsListenerBackgroundService\WsListenerBackgroundService.csproj", "{B953B4DC-48C4-4592-AD1C-90B6ED30C385}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlfTest", "AlfTest\AlfTest.csproj", "{FFBFA267-B241-480D-B229-7DC3BC712A11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,5 +48,9 @@ Global
 		{B953B4DC-48C4-4592-AD1C-90B6ED30C385}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B953B4DC-48C4-4592-AD1C-90B6ED30C385}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B953B4DC-48C4-4592-AD1C-90B6ED30C385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFBFA267-B241-480D-B229-7DC3BC712A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFBFA267-B241-480D-B229-7DC3BC712A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFBFA267-B241-480D-B229-7DC3BC712A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFBFA267-B241-480D-B229-7DC3BC712A11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

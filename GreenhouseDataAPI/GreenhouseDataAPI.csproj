@@ -11,6 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="..\AlfTest\AlfTest.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
       <ProjectReference Include="..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\EFCData\EFCData.csproj" />
       <ProjectReference Include="..\Entities\Entities.csproj" />
