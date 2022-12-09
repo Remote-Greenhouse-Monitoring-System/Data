@@ -2,8 +2,6 @@ using Contracts;
 using Entities;
 using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
-using WebSocketClients.Interfaces;
-using GreenhouseDataAPI.Attributes;
 namespace GreenhouseDataAPI.Controllers;
 
 [ApiController]
@@ -12,11 +10,9 @@ namespace GreenhouseDataAPI.Controllers;
 public class GreenHouseController : ControllerBase {
 
     private readonly IGreenHouseService _greenHouseService;
-    private IThresholdClient _thresholdClient;
 
-    public GreenHouseController(IGreenHouseService greenHouseService, IThresholdClient thresholdClient) {
+    public GreenHouseController(IGreenHouseService greenHouseService) {
         _greenHouseService = greenHouseService;
-        _thresholdClient = thresholdClient;
     }
     
     
@@ -77,25 +73,7 @@ public class GreenHouseController : ControllerBase {
             return StatusCode(500,ex.Message);
         }
     }
-    
-    
-    //ws-client test
-    [HttpGet]
-    [Route("clientTest/")]
-    public async Task<ActionResult> ClientTest()
-    {
-        try
-        {
-            await _thresholdClient.WsClientTest();
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            return StatusCode(500, e.Message);
-        }
-    }
-    
+
     [HttpGet]
     [Route("lastMeasurementGreenhouse")]
     public async Task<ActionResult<GreenHouse>> GetLastMeasurementGreenhouse()

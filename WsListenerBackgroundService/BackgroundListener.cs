@@ -5,7 +5,6 @@ using Entities;
 using Newtonsoft.Json;
 using WebSocketClients.Clients;
 using WsListenerBackgroundService.DTOs;
-
 namespace WsListenerBackgroundService;
 
 public class BackgroundListener : BackgroundService
@@ -21,6 +20,7 @@ public class BackgroundListener : BackgroundService
         _clientWebSocket = new ClientWebSocket();
     }
     
+    //StartAsync()
     // public override async Task StartAsync(CancellationToken cancellationToken)
     // {
     //     //connect:
@@ -33,6 +33,9 @@ public class BackgroundListener : BackgroundService
     //     }
     // }
 
+    
+    //ExecuteAsync()
+    private string _lastStatus = "00000000";
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         //open connection:
@@ -42,69 +45,157 @@ public class BackgroundListener : BackgroundService
             Console.WriteLine("... background listener CONNECTED");
         }
         catch (Exception e) {
-            Console.WriteLine("Exception: {String}",e.Message);
+            Console.WriteLine("Exception: " + e.Message);
             throw;
         }
 
-        string strResult = "";
+        //infinite-listening loop
+        var uplinkJson = "";
         while (!stoppingToken.IsCancellationRequested)
-        { 
-            // keep receiving:
+        {
+            //waiting for message/measurements
+            Console.WriteLine("Waiting for measurements ... " + DateTime.Now);
+            //receive message
             Byte[] buffer = new byte[256];
-            Console.WriteLine("Waiting for measurements ...");
-            //->waiting
-            var x = await _clientWebSocket.ReceiveAsync(buffer, CancellationToken.None);
+            var receiveResult = await _clientWebSocket.ReceiveAsync(buffer, CancellationToken.None);
+            uplinkJson += Encoding.UTF8.GetString(buffer);
             
-            strResult += Encoding.UTF8.GetString(buffer);
-            if (!x.EndOfMessage) continue;
-            Console.WriteLine("received: " + strResult);
-            
-            // string strResult = "{\"cmd\":\"rx\",\"seqno\":1736,\"EUI\":\"0004A30B00E8355E\",\"ts\":1669797345523,\"fcnt\":7,\"port\":2,\"freq\":867500000,\"rssi\":-115,\"snr\":-6,\"toa\":0,\"dr\":\"SF12 BW125 4/5\",\"ack\":false,\"bat\":255,\"offline\":false,\"data\":\"00320019041a00\"}";
-            // {"cmd":"gw","seqno":1742,"EUI":"0004A30B00E8355E","ts":1670259961585,"fcnt":0,"port":2,"freq":868300000,"toa":0,"dr":"SF12 BW125 4/5","ack":false,"gws":[{"rssi":-92,"snr":-13,"ts":1670259961614,"tmms":52000,"time":"2022-12-05T17:06:01.459672112Z","gweui":"7076FFFFFF019BF7","ant":1,"lat":56.0990389,"lon":10.2172163},{"rssi":-93,"snr":-12,"ts":1670259961614,"tmms":52000,"time":"2022-12-05T17:06:01.459672112Z","gweui":"7076FFFFFF019BF7","ant":0,"lat":56.0990389,"lon":10.2172163},{"rssi":-94,"snr":-11,"ts":1670259961606,"tmms":52000,"time":"2022-12-05T17:06:01.459670122Z","gweui":"7076FFFFFF019BFA","ant":1,"lat":56.0990389,"lon":10.2172163},{"rssi":-97,"snr":-11,"ts":1670259961606,"tmms":52000,"time":"2022-12-05T17:06:01.459670122Z","gweui":"7076FFFFFF019BFA","ant":0,"lat":56.0990389,"lon":10.2172163},{"rssi":-100,"snr":-22,"ts":1670259961585,"tmms":52000,"time":"2022-12-05T17:06:01.459722577Z","gweui":"7076FFFFFF019E83","ant":0,"lat":56.3038732,"lon":9.9761113},{"rssi":-101,"snr":-15,"ts":1670259961606,"tmms":52000,"time":"2022-12-05T17:06:01.459727149Z","gweui":"7076FFFFFF019DBF","ant":1,"lat":56.3038732,"lon":9.9761113},{"rssi":-101,"snr":-16,"ts":1670259961606,"tmms":52000,"time":"2022-12-05T17:06:01.459727149Z","gweui":"7076FFFFFF019DBF","ant":0,"lat":56.3038732,"lon":9.9761113},{"rssi":-108,"snr":-22,"ts":1670259961585,"tmms":52000,"time":"2022-12-05T17:06:01.459722577Z","gweui":"7076FFFFFF019E83","ant":1,"lat":56.3038732,"lon":9.9761113}],"bat":255,"data":"00320019041a00","_id":"638e24f9653c41d5dccd887c"}
-            
+            if (!receiveResult.EndOfMessage) continue;
+            Console.WriteLine("received: " + uplinkJson);
+
             //->deserialize into UplinkDTO-object
-            var upLinkDto = JsonConvert.DeserializeObject<UpLinkDTO>(strResult);
-            strResult = "";
+            var upLinkDto = JsonConvert.DeserializeObject<UpLinkDTO>(uplinkJson);
+            uplinkJson = "";
             //skip to next iteration if uplinkDto is null or 'cmd' is not "rx"
             if (upLinkDto is not { Cmd: "rx" }) continue;
-            //->extract measurements
-            Measurement? m = ReceivedDataToMeasurement(upLinkDto);
-            if (m == null) continue;
-            
-            //->send received data to DB
+
+            //--------------
             using var scope = _serviceProvider.CreateScope();
+            var thresholdService = scope.ServiceProvider.GetRequiredService<IThresholdService>();
+            var greenhouseService = scope.ServiceProvider.GetRequiredService<IGreenHouseService>();
             var measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
-            await measurementService.AddMeasurement(m,1,1);
-            //ToDo: send measurement and EUI instead of gId 
-            // await measurementService.AddMeasurement(m,upLinkDto.Eui);
+            //--------------
+            
+            //send response [DownLink]
+            var greenhouseId = greenhouseService.GetGreenhouseIdByEui(upLinkDto.Eui);
+            //ToDo: real active threshold here
+            // var threshold = thresholdService.GetActiveThreshold(greenhouseId);
+            var threshold = new Threshold();
+            await SendDownLinkAsync(upLinkDto.Eui, upLinkDto.Port, threshold);
+
+            
+            //if data null continue listeningS
+            if (string.IsNullOrEmpty(upLinkDto.Data)) continue;
+            
+            //extract measurements and send to DB
+            var newMeasurement = ReceivedDataToMeasurement(upLinkDto.Data);
+            //ToDo: get real pId instead
+            // await measurementService.AddMeasurement(newMeasurement,greenhouseId, greenhouseService.GetActivePlantProfileId(greenhouseId));
+            await measurementService.AddMeasurement(newMeasurement,greenhouseId,1);
+            
+            //extract status and send notification if changed
+            // var newStatus = GetStatusFromReceivedData(upLinkDto.Data);
+            // if (!_lastStatus.Equals(newStatus))
+            // {
+            //     var whatActionsHappened = GetChangedActions(_lastStatus, newStatus);
+            //     //ToDo: ->sent notification 
+            // }
+            // _lastStatus = newStatus;
         }
         
         //close connection
         await _clientWebSocket.CloseAsync((WebSocketCloseStatus)0, null, CancellationToken.None);
     }
-    
+
+    //StopAsync()
     // public override async Task StopAsync(CancellationToken cancellationToken)
     // {
     //     await _clientWebSocket.CloseAsync((WebSocketCloseStatus)0, null, CancellationToken.None);
     // }
+
     
-    
-    
-    private static Measurement? ReceivedDataToMeasurement(UpLinkDTO upLinkDto)
+    private async Task SendDownLinkAsync(string eui, int port, Threshold threshold)
     {
-        Measurement? m = null;
-        if (!String.IsNullOrEmpty(upLinkDto.Data))
+        var s = ThresholdsToHexString(threshold);
+        //create fake DownLink
+        DownLinkDTO downLinkDto = new ()
         {
-            int i = 0;
-            int l = 4;
-            double temperature = Math.Round(Convert.ToInt16(upLinkDto.Data.Substring(i,l),16) / 10.0, 1);
-            double humidity = Math.Round(Convert.ToInt16(upLinkDto.Data.Substring(i+1*l,l),16) / 10.0, 1);
-            double co2 = Convert.ToInt16(upLinkDto.Data.Substring(i+2*l,l),16);
-            byte status = Convert.ToByte(upLinkDto.Data.Substring(i+3*l,2),16);
-            
-            m = new Measurement((float)temperature, (float)humidity, (float)co2, 1, upLinkDto.Ts);
-        }
+            cmd = "tx",
+            EUI = eui,
+            port = port,
+            confirmed = true,
+            // data = ThresholdsToHexString(threshold)
+            data = "001b001d"
+        };
+        //convert to json
+        string downLinkJson = JsonConvert.SerializeObject(downLinkDto);
+        // const string downLinkJson = "{\"cmd\"  : \"tx\",\"EUI\"  : \"0004A30B00E8355E\",\"port\" : 2,\"confirmed\" : false,\"data\" : \"001b001d\"}";
+        //send fake DownLink
+        await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(downLinkJson), WebSocketMessageType.Text, true, CancellationToken.None);
+        await Console.Out.WriteLineAsync("DownLink sent: " + downLinkJson);
+    }
+
+    private static string ThresholdsToHexString(Threshold thresholds)
+    {
+        var thresholdHexString = "";
         
-        return m;
+        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.TemperatureMax));
+        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.TemperatureMin));
+        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.HumidityMax));
+        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.HumidityMin));
+        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.Co2Max));
+        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.Co2Min));
+        //ToDo: light missing ...?
+        
+        return thresholdHexString;
+    }
+
+
+    //retrieve methods:
+    private const int ByteSize = 2;
+    private static Measurement ReceivedDataToMeasurement(string data)
+    {
+        var i = 0;
+        
+        var temperature = Math.Round(Convert.ToInt16(data.Substring(i,ByteSize*2),16) / 10.0, 1);
+        i += ByteSize * 2;
+        var humidity = Math.Round(Convert.ToInt16(data.Substring(i,ByteSize*2),16) / 10.0, 1);
+        i += ByteSize * 2;
+        var co2 = Convert.ToInt16(data.Substring(i,ByteSize*2),16);
+        i += ByteSize * 2;
+        // var light = Convert.ToInt16(data.Substring(i,ByteSize*4),16);
+
+        // return new Measurement((float)temperature, (float)humidity, co2, light);
+        return new Measurement((float)temperature, (float)humidity, co2, 1);
+    }
+
+    private static string GetStatusFromReceivedData(string data)
+    {
+        return Convert.ToString(data.Substring(10*ByteSize,ByteSize));
+    }
+    
+    private static IEnumerable<string> GetChangedActions(string lastStatus, string newStatus)
+    {
+        //0000 light-co2-humidity-window
+        var actions = new[] { "Light-action", "Co2-action", "Humidity-action", "Temperature-action"};
+
+        var changedActions = new List<string>();
+        for (var i = 0; i < lastStatus.Length; i++)
+        {
+            //if last- and new- states are the same ->skip
+            if (lastStatus[i].Equals(newStatus[i])) continue;
+            //else
+            switch (newStatus[i])
+            {
+                case '0':
+                    changedActions.Add(actions[i-4]+"-turned OFF");
+                    break;
+                case '1':
+                    changedActions.Add(actions[i-4]+"-turned ON");
+                    break;
+            }
+        }
+
+        return changedActions;
     }
 }
