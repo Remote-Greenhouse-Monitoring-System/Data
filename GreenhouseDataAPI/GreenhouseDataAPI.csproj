@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="..\AlfTest\AlfTest.csproj" />
+        <InternalsVisibleTo Include="..\Tests\Tests.csproj" />
     </ItemGroup>
     
     <ItemGroup>
