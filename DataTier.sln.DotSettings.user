@@ -1,0 +1,17 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=80d59c16_002D7f62_002D48c5_002Da0e1_002Da5435c0b242c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::FFBFA267-B241-480D-B229-7DC3BC712A11::net6.0::AlfTest.UnitTest1&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::FFBFA267-B241-480D-B229-7DC3BC712A11::net6.0::AlfTest.GreenHouseTest&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=90e2c536_002Ddf8a_002D47c7_002D8e2f_002D760bfc8b8fc4/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetGreenHouses_WithValidUserId_ReturnsGreenHouses" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::FFBFA267-B241-480D-B229-7DC3BC712A11::net6.0::AlfTest.GreenHouseTest.GetGreenHouses_WithValidUserId_ReturnsGreenHouses&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fe94f08f_002D61b7_002D4fb3_002D9c4d_002D57a161979f0d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GreenHouseTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::FFBFA267-B241-480D-B229-7DC3BC712A11::net6.0::AlfTest.GreenHouseTest&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
