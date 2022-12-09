@@ -11,5 +11,6 @@ public interface IPlantProfileService
     public Task<ICollection<PlantProfile>> GetPreMadePlantProfiles();
     public Task<PlantProfile> GetPlantProfileById(long pId);
     public Task ActivatePlantProfile(long pId,long gId);
+    public Task DeActivatePlantProfile(long gId);
     Task<PlantProfile> GetActivePlantProfileOnGreenhouse(long gId);
 }
