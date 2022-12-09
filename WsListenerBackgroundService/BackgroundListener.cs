@@ -48,6 +48,13 @@ public class BackgroundListener : BackgroundService
             Console.WriteLine("Exception: " + e.Message);
             throw;
         }
+        
+        //--------------
+        using var scope = _serviceProvider.CreateScope();
+        var thresholdService = scope.ServiceProvider.GetRequiredService<IThresholdService>();
+        var greenhouseService = scope.ServiceProvider.GetRequiredService<IGreenHouseService>();
+        var measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
+        //--------------
 
         //infinite-listening loop
         var uplinkJson = "";
@@ -69,22 +76,12 @@ public class BackgroundListener : BackgroundService
             //skip to next iteration if uplinkDto is null or 'cmd' is not "rx"
             if (upLinkDto is not { Cmd: "rx" }) continue;
 
-            //--------------
-            using var scope = _serviceProvider.CreateScope();
-            var thresholdService = scope.ServiceProvider.GetRequiredService<IThresholdService>();
-            var greenhouseService = scope.ServiceProvider.GetRequiredService<IGreenHouseService>();
-            var measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
-            //--------------
-            
             //send response [DownLink]
             var greenhouseId = greenhouseService.GetGreenhouseIdByEui(upLinkDto.Eui);
-            //ToDo: real active threshold here
-            // var threshold = thresholdService.GetActiveThreshold(greenhouseId);
-            var threshold = new Threshold();
+            var threshold = await thresholdService.GetThresholdOnActivePlantProfile(greenhouseId);
             await SendDownLinkAsync(upLinkDto.Eui, upLinkDto.Port, threshold);
 
-            
-            //if data null continue listeningS
+            //if data null continue listening
             if (string.IsNullOrEmpty(upLinkDto.Data)) continue;
             
             //extract measurements and send to DB
