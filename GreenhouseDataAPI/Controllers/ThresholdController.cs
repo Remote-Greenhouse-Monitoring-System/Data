@@ -45,4 +45,19 @@ public class ThresholdController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    
+    [HttpGet]
+    [Route("activeThreshold/{gId:long}")]
+    public async Task<ActionResult<Threshold>> UpdateThresholdForPlantProfile([FromRoute] long gId)
+    {
+        try
+        {
+            Threshold threshold = await _service.GetThresholdOnActivePlantProfile(gId);
+            return Ok(threshold);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
 }
