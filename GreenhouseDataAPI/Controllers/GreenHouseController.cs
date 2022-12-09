@@ -12,11 +12,11 @@ namespace GreenhouseDataAPI.Controllers;
 public class GreenHouseController : ControllerBase {
 
     private readonly IGreenHouseService _greenHouseService;
-    private IGreenhouseClient _greenhouseClient;
+    private IThresholdClient _thresholdClient;
 
-    public GreenHouseController(IGreenHouseService greenHouseService, IGreenhouseClient greenhouseClient) {
+    public GreenHouseController(IGreenHouseService greenHouseService, IThresholdClient thresholdClient) {
         _greenHouseService = greenHouseService;
-        _greenhouseClient = greenhouseClient;
+        _thresholdClient = thresholdClient;
     }
     
     
@@ -86,7 +86,7 @@ public class GreenHouseController : ControllerBase {
     {
         try
         {
-            await _greenhouseClient.WsClientTest();
+            await _thresholdClient.WsClientTest();
             return Ok();
         }
         catch (Exception e)
@@ -114,12 +114,12 @@ public class GreenHouseController : ControllerBase {
     }
     
     [HttpGet]
-    [Route("greenhousesWithLastMeasurements")]
-    public async Task<ActionResult<ICollection<GreenhouseLastMeasurement>>> GetGreenhouesWithLastMeasurements()
+    [Route("greenhousesWithLastMeasurements/{uId:long}")]
+    public async Task<ActionResult<ICollection<GreenhouseLastMeasurement>>> GetGreenhouesWithLastMeasurements(long uId)
     {
         try
         {
-            ICollection<GreenhouseLastMeasurement> greenhousesWithMeasurement = await _greenHouseService.GetGreenhousesWithMeasurement();
+            ICollection<GreenhouseLastMeasurement> greenhousesWithMeasurement = await _greenHouseService.GetGreenhousesWithLastMeasurement(uId);
             
             return Ok(greenhousesWithMeasurement);
         }
