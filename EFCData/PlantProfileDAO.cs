@@ -134,6 +134,26 @@ public class PlantProfileDao : IPlantProfileService
         await _greenhouseSystemContext.SaveChangesAsync();
     }
 
+    public async Task DeActivatePlantProfile( long gId)
+    {
+
+
+        GreenHouse greenHouse;
+        try
+        {
+            greenHouse= await _greenhouseSystemContext.GreenHouses!.Include(g=>g.ActivePlantProfile).FirstAsync(g => g.Id == gId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Greenhouse not found.");
+        }
+
+        greenHouse.ActivePlantProfile = null;
+        _greenhouseSystemContext.GreenHouses!.Update(greenHouse);
+        await _greenhouseSystemContext.SaveChangesAsync();
+    }
+
     public async Task<PlantProfile> GetActivePlantProfileOnGreenhouse(long gId)
     {
         GreenHouse greenHouse;

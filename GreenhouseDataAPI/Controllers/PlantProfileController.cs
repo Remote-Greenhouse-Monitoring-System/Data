@@ -108,6 +108,18 @@ public class PlantProfileController : ControllerBase
             return StatusCode(500,e.Message);
         }
     }
+    [HttpPatch]
+    [Route("deactivate/{gId:long}")]
+    public async Task<ActionResult> DeActivatePlantProfile([FromRoute] long gId)
+    {
+        try {
+            await _plantProfileService.DeActivatePlantProfile(gId);
+            return Ok();
+        }
+        catch (Exception e) {
+            return StatusCode(500,e.Message);
+        }
+    }
     
     [HttpGet]
     [Route("activated/{gId:long}")]
