@@ -79,3 +79,5 @@ app.UseWebSockets(webSocketOptions);
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
