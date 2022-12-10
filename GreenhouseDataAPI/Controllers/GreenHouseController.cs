@@ -25,7 +25,7 @@ public class GreenHouseController : ControllerBase {
             return Ok(greenHouses);
         }
         catch (Exception ex) {
-            return StatusCode(500,ex.Message);
+            return StatusCode(404,ex.Message);
         }
 
     }
@@ -93,7 +93,7 @@ public class GreenHouseController : ControllerBase {
     
     [HttpGet]
     [Route("greenhousesWithLastMeasurements/{uId:long}")]
-    public async Task<ActionResult<ICollection<GreenhouseLastMeasurement>>> GetGreenhouesWithLastMeasurements(long uId)
+    public async Task<ActionResult<ICollection<GreenhouseLastMeasurement>>> GetGreenhousesWithLastMeasurements(long uId)
     {
         try
         {
@@ -104,7 +104,7 @@ public class GreenHouseController : ControllerBase {
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            return StatusCode(500, e.Message);
+            return StatusCode(404, e.Message);
         }
     }
 }

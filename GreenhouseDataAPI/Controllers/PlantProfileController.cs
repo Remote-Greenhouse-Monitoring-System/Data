@@ -67,7 +67,7 @@ public class PlantProfileController : ControllerBase
             return Ok(plantProfiles);
         }
         catch (Exception e) {
-            return StatusCode(500,e.Message);
+            return StatusCode(404,e.Message);
         }
     }
 
@@ -92,7 +92,7 @@ public class PlantProfileController : ControllerBase
             return Ok(plantProfile);
         }
         catch (Exception e) {
-            return StatusCode(500,e.Message);
+            return StatusCode(404,e.Message);
         }
     }
 
@@ -130,7 +130,7 @@ public class PlantProfileController : ControllerBase
             return Ok(plantProfile);
         }
         catch (Exception e) {
-            return StatusCode(500,e.Message);
+            return StatusCode(404,e.Message);
         }
     }
 
