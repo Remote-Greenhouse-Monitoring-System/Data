@@ -36,10 +36,10 @@ public class GreenHouseController : ControllerBase {
     
     [HttpPost]
     [Route("{uid:long}")]
-    public async Task<ActionResult> CreateGreenHouse([FromRoute] long uid, [FromBody] GreenHouse greenHouse) {
+    public async Task<ActionResult<GreenHouse>> CreateGreenHouse([FromRoute] long uid, [FromBody] GreenHouse greenHouse) {
         try {
-            await _greenHouseService.AddGreenHouse(uid, greenHouse);
-            return Ok();
+            GreenHouse g= await _greenHouseService.AddGreenHouse(uid, greenHouse);
+            return Ok(g);
         }
         catch (Exception ex) {
             return StatusCode(500,ex.Message);
@@ -52,8 +52,8 @@ public class GreenHouseController : ControllerBase {
     [HttpPatch]
     public async Task<ActionResult> UpdateGreenHouse([FromBody] GreenHouse greenHouse) {
         try {
-            await _greenHouseService.UpdateGreenHouse(greenHouse);
-            return Ok();
+            GreenHouse g = await _greenHouseService.UpdateGreenHouse(greenHouse);
+            return Ok(g);
         }
         catch (Exception ex) {
             return StatusCode(500,ex.Message);
@@ -66,8 +66,8 @@ public class GreenHouseController : ControllerBase {
     [Route("{gid:long}")]
     public async Task<ActionResult> RemoveGreenHouse([FromRoute] long gid) {
         try {
-            await _greenHouseService.RemoveGreenHouse(gid);
-            return Ok();
+            GreenHouse g=await _greenHouseService.RemoveGreenHouse(gid);
+            return Ok(g);
         }
         catch (Exception ex) {
             return StatusCode(500,ex.Message);

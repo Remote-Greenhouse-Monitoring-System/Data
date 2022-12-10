@@ -1,5 +1,6 @@
 using Contracts;
 using Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCData;
@@ -54,14 +55,31 @@ public class UserDao : IUserService
 
     public async Task<User> AddUser(User user)
     {
-        await _systemContext.Users!.AddAsync(user);
+        
+        if (_systemContext.Users.First(u => user.Email == u.Email) != null)
+        {
+            throw new("User with this email already exists. ");
+        }
+        
+        
+        if(_systemContext.Users.First(u=>u.Username==user.Username)!=null)
+        {
+            throw new("User with this username already exists. ");
+        }
+        
+        try
+        {
+            await _systemContext.Users!.AddAsync(user);
+        }
+        catch (SqlException sqlException)
+        {
+            throw new("Something went wrong when adding the user. Please try again. ");
+        }
         await _systemContext.SaveChangesAsync();
         return await _systemContext.Users!.FirstAsync(u => u.Email == user.Email);
-
-
     }
 
-    public async Task RemoveUser(long userId)
+    public async Task<User> RemoveUser(long userId)
 
     {
         User user;
@@ -74,8 +92,11 @@ public class UserDao : IUserService
             Console.WriteLine(e);
             throw new Exception("There is no user with that id.");
         }
+
+        User u = user;
         _systemContext.Users!.Remove(user);
         await _systemContext.SaveChangesAsync();
+        return u;
     }
 
     public async Task<User> UpdateUser(User user)
@@ -96,7 +117,6 @@ public class UserDao : IUserService
     }
 
     //TODO Add some kind of encryption to the password 
-    //Use PasswordHasher
     public async Task<User> LogUserIn(string email, string password)
     {
         User user;

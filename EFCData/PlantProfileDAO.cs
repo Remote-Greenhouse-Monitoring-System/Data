@@ -37,7 +37,7 @@ public class PlantProfileDao : IPlantProfileService
         return plantP;
     }
     
-    public async Task RemovePlantProfile(long pId)
+    public async Task<PlantProfile> RemovePlantProfile(long pId)
     {
         PlantProfile plantProfile;
         try
@@ -49,8 +49,11 @@ public class PlantProfileDao : IPlantProfileService
             Console.WriteLine(e);
             throw new Exception("Plant profile not found.");
         }
+
+        PlantProfile profile = plantProfile;
         _greenhouseSystemContext.PlantProfiles!.Remove(plantProfile);
         await _greenhouseSystemContext.SaveChangesAsync();
+        return profile;
     }
 
     public async Task<PlantProfile> UpdatePlantProfile(PlantProfile plantP)

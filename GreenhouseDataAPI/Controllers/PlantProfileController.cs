@@ -37,8 +37,8 @@ public class PlantProfileController : ControllerBase
     public async Task<ActionResult<PlantProfile>> RemovePlantProfile([FromRoute] long pId)
     {
         try { 
-            await _plantProfileService.RemovePlantProfile(pId);
-            return Ok();
+            PlantProfile profile = await _plantProfileService.RemovePlantProfile(pId);
+            return Ok(profile);
         }
         catch (Exception e) {
             return StatusCode(500,e.Message);
@@ -50,8 +50,8 @@ public class PlantProfileController : ControllerBase
     public async Task<ActionResult<PlantProfile>> UpdatePlantProfile([FromBody] PlantProfile plantP)
     {
         try { 
-            await _plantProfileService.UpdatePlantProfile(plantP);
-            return Ok();
+            PlantProfile profile = await _plantProfileService.UpdatePlantProfile(plantP);
+            return Ok(profile);
         }
         catch (Exception e) {
             return StatusCode(500,e.Message);
