@@ -3,6 +3,7 @@ using EFCData;
 using FirebaseAdmin;
 using FirebaseNotificationClient;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using WsListenerBackgroundService;
 
@@ -55,8 +56,7 @@ var defaultApp = FirebaseApp.Create(new AppOptions()
 
 Console.WriteLine(defaultApp.Name);
 //adding all services
-builder.Services.AddScoped<GreenhouseSystemContext>();
-builder.Services.AddDbContext<GreenhouseSystemContext>();
+builder.Services.AddDbContext<GreenhouseSystemContext>(options=>options.UseSqlServer("name=ConnectionStrings:GreenhouseDB"));
 builder.Services.AddScoped<IMeasurementService, MeasurementDao>();
 builder.Services.AddScoped<IUserService, UserDao>();
 builder.Services.AddScoped<IGreenHouseService, GreenHouseDao>();

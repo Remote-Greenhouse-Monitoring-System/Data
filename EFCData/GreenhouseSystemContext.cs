@@ -12,17 +12,10 @@ public class GreenhouseSystemContext : DbContext
     public DbSet<PlantProfile>? PlantProfiles { get; set; } = null!;
     public DbSet<User>? Users { get; set; } = null!;
     public DbSet<Threshold>? Thresholds { get; set; } = null!;
-    public static IConfiguration Configuration { get; set; }
 
-    public GreenhouseSystemContext(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public GreenhouseSystemContext(DbContextOptions options) : base(options)
     {
-        
-        optionsBuilder.UseSqlServer(Configuration.GetConnectionString("GreenhouseDB"));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

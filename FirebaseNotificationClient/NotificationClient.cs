@@ -18,7 +18,6 @@ public class NotificationClient : INotificationClient
             },
 
             Token = token,
-            Topic = "news"
         };
         var messaging = FirebaseMessaging.DefaultInstance;
         var result = await messaging.SendAsync(message);
