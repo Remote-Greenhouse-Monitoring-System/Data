@@ -32,10 +32,9 @@ public class BackgroundListener : BackgroundService
     //         throw;
     //     }
     // }
-
     
     //ExecuteAsync()
-    private string _lastStatus = "00000000";
+    private string _lastStatusBits = "00000000";
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         //open connection:
@@ -81,27 +80,25 @@ public class BackgroundListener : BackgroundService
             var threshold = await thresholdService.GetThresholdOnActivePlantProfile(greenhouseId);
             await SendDownLinkAsync(upLinkDto.Eui, upLinkDto.Port, threshold);
 
-            //if data null continue listening
+            //if data=null continue listening
             if (string.IsNullOrEmpty(upLinkDto.Data)) continue;
             
             //extract measurements and send to DB
-            var newMeasurement = ReceivedDataToMeasurement(upLinkDto.Data);
-            //ToDo: get real pId instead
-            // await measurementService.AddMeasurement(newMeasurement,greenhouseId, greenhouseService.GetActivePlantProfileId(greenhouseId));
-            await measurementService.AddMeasurement(newMeasurement,greenhouseId,1);
-            
+            var newMeasurement = GetMeasurementFromReceivedData(greenhouseId, upLinkDto.Data);
+            await measurementService.AddMeasurement(newMeasurement,greenhouseId);
+
             //extract status and send notification if changed
-            // var newStatus = GetStatusFromReceivedData(upLinkDto.Data);
-            // if (!_lastStatus.Equals(newStatus))
-            // {
-            //     var whatActionsHappened = GetChangedActions(_lastStatus, newStatus);
-            //     //ToDo: ->sent notification 
-            // }
-            // _lastStatus = newStatus;
+            var newStatusBits = GetStatusFromReceivedData(upLinkDto.Data);
+            if (!_lastStatusBits.Equals(newStatusBits))
+            {
+                var whatActionsHappened = GetChangedActions(_lastStatusBits, newStatusBits);
+                //ToDo: ->send notification here
+            }
+            _lastStatusBits = newStatusBits;
         }
         
         //close connection
-        await _clientWebSocket.CloseAsync((WebSocketCloseStatus)0, null, CancellationToken.None);
+        await _clientWebSocket.CloseAsync(0, null, CancellationToken.None);
     }
 
     //StopAsync()
@@ -113,7 +110,6 @@ public class BackgroundListener : BackgroundService
     
     private async Task SendDownLinkAsync(string eui, int port, Threshold threshold)
     {
-        var s = ThresholdsToHexString(threshold);
         //create fake DownLink
         DownLinkDTO downLinkDto = new ()
         {
@@ -121,57 +117,45 @@ public class BackgroundListener : BackgroundService
             EUI = eui,
             port = port,
             confirmed = true,
-            // data = ThresholdsToHexString(threshold)
-            data = "001b001d"
+            data = GetHexStringFromThreshold(threshold)
+            // data = "001b001d"
         };
         //convert to json
         string downLinkJson = JsonConvert.SerializeObject(downLinkDto);
         // const string downLinkJson = "{\"cmd\"  : \"tx\",\"EUI\"  : \"0004A30B00E8355E\",\"port\" : 2,\"confirmed\" : false,\"data\" : \"001b001d\"}";
-        //send fake DownLink
         await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(downLinkJson), WebSocketMessageType.Text, true, CancellationToken.None);
         await Console.Out.WriteLineAsync("DownLink sent: " + downLinkJson);
     }
-
-    private static string ThresholdsToHexString(Threshold thresholds)
-    {
-        var thresholdHexString = "";
-        
-        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.TemperatureMax));
-        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.TemperatureMin));
-        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.HumidityMax));
-        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.HumidityMin));
-        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.Co2Max));
-        thresholdHexString += BitConverter.ToInt16(BitConverter.GetBytes(thresholds.Co2Min));
-        //ToDo: light missing ...?
-        
-        return thresholdHexString;
-    }
+    
 
 
-    //retrieve methods:
+    //------------ convert/retrieve methods -------------
+    
     private const int ByteSize = 2;
-    private static Measurement ReceivedDataToMeasurement(string data)
+    public static Measurement GetMeasurementFromReceivedData(long gId, string data)
     {
         var i = 0;
         
-        var temperature = Math.Round(Convert.ToInt16(data.Substring(i,ByteSize*2),16) / 10.0, 1);
+        var temperature = Convert.ToInt16(data.Substring(i,ByteSize*2),16) / 10.0;
         i += ByteSize * 2;
         var humidity = Math.Round(Convert.ToInt16(data.Substring(i,ByteSize*2),16) / 10.0, 1);
         i += ByteSize * 2;
         var co2 = Convert.ToInt16(data.Substring(i,ByteSize*2),16);
-        i += ByteSize * 2;
+        // i += ByteSize * 2;
         // var light = Convert.ToInt16(data.Substring(i,ByteSize*4),16);
 
         // return new Measurement((float)temperature, (float)humidity, co2, light);
-        return new Measurement((float)temperature, (float)humidity, co2, 1);
+        return new Measurement(gId, (float)temperature, (float)humidity, co2, 1);
     }
 
-    private static string GetStatusFromReceivedData(string data)
+    public static string GetStatusFromReceivedData(string data)
     {
-        return Convert.ToString(data.Substring(10*ByteSize,ByteSize));
+        var statusInt = Convert.ToInt16(data.Substring(6 * ByteSize, ByteSize), 16);
+        var statusBits = Convert.ToString(statusInt, 2).PadLeft(8, '0');
+        return statusBits;
     }
     
-    private static IEnumerable<string> GetChangedActions(string lastStatus, string newStatus)
+    public static List<string> GetChangedActions(string lastStatus, string newStatus)
     {
         //0000 light-co2-humidity-window
         var actions = new[] { "Light-action", "Co2-action", "Humidity-action", "Temperature-action"};
@@ -185,14 +169,28 @@ public class BackgroundListener : BackgroundService
             switch (newStatus[i])
             {
                 case '0':
-                    changedActions.Add(actions[i-4]+"-turned OFF");
+                    changedActions.Add(actions[i-4]+" turned OFF");
                     break;
                 case '1':
-                    changedActions.Add(actions[i-4]+"-turned ON");
+                    changedActions.Add(actions[i-4]+" turned ON");
                     break;
             }
         }
 
         return changedActions;
+    }
+    
+    public static string GetHexStringFromThreshold(Threshold thresholds)
+    {
+        //ToDo: light missing ...?
+
+        var thresholdHexString = "";
+        thresholdHexString += ((int)(thresholds.TemperatureMax *10)).ToString("X4");
+        thresholdHexString += ((int)(thresholds.TemperatureMin *10)).ToString("X4");
+        thresholdHexString += ((int)(thresholds.HumidityMax *10)).ToString("X4");
+        thresholdHexString += ((int)(thresholds.HumidityMin *10)).ToString("X4");
+        thresholdHexString += ((int)thresholds.Co2Max).ToString("X4");
+        thresholdHexString += ((int)thresholds.Co2Min).ToString("X4");
+        return thresholdHexString;
     }
 }
