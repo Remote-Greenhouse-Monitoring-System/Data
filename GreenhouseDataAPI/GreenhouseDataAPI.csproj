@@ -11,10 +11,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="..\Tests\Tests.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
       <ProjectReference Include="..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\EFCData\EFCData.csproj" />
       <ProjectReference Include="..\Entities\Entities.csproj" />
-      <ProjectReference Include="..\WebSocketClients\WebSocketClients.csproj" />
       <ProjectReference Include="..\WsListenerBackgroundService\WsListenerBackgroundService.csproj" />
     </ItemGroup>
 

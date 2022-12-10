@@ -11,4 +11,7 @@ public interface IGreenHouseService {
 
     Task<GreenHouse> GetLastMeasurementGreenhouse();
     Task<ICollection<GreenhouseLastMeasurement>> GetGreenhousesWithLastMeasurement(long uId);
+    
+    //simulate getting GID from DB ->uses hardcoded Dictionary instead
+    long GetGreenhouseIdByEui(string eui);
 }

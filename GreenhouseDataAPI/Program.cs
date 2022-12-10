@@ -1,9 +1,6 @@
 using Contracts;
 using EFCData;
-using GreenhouseDataAPI;
 using Microsoft.OpenApi.Models;
-using WebSocketClients.Clients;
-using WebSocketClients.Interfaces;
 using WsListenerBackgroundService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,11 +51,8 @@ builder.Services.AddScoped<IUserService, UserDao>();
 builder.Services.AddScoped<IGreenHouseService, GreenHouseDao>();
 builder.Services.AddScoped<IPlantProfileService, PlantProfileDao>();
 builder.Services.AddScoped<IThresholdService, ThresholdDao>();
-//WS-client
-builder.Services.AddScoped<IThresholdClient, ThresholdClient>();
-//Ws-listener
-// builder.Services.AddHostedService(sp=>sp.GetService<BackgroundListener>());
-// builder.Services.AddSingleton<BackgroundListener>();
+
+//Ws-client
 builder.Services.AddHostedService<BackgroundListener>();
 
 var app = builder.Build();
@@ -85,3 +79,5 @@ app.UseWebSockets(webSocketOptions);
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
