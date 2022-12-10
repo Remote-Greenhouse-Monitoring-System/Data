@@ -2,5 +2,6 @@ namespace FirebaseNotificationClient;
 
 public interface INotificationClient
 {
-    public void SendNotificationToUser(string key);
+    public Task SendNotificationToUser(string token);
 }
+

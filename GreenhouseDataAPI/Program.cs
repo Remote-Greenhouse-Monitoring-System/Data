@@ -1,5 +1,8 @@
 using Contracts;
 using EFCData;
+using FirebaseAdmin;
+using FirebaseNotificationClient;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.OpenApi.Models;
 using WsListenerBackgroundService;
 
@@ -44,6 +47,14 @@ builder.Services.AddSwaggerGen(c =>
     
     c.AddSecurityRequirement(requirement);
 });
+
+var defaultApp = FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "key.json")),
+});
+
+Console.WriteLine(defaultApp.Name);
+//adding all services
 builder.Services.AddScoped<GreenhouseSystemContext>();
 builder.Services.AddDbContext<GreenhouseSystemContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDao>();
@@ -51,6 +62,7 @@ builder.Services.AddScoped<IUserService, UserDao>();
 builder.Services.AddScoped<IGreenHouseService, GreenHouseDao>();
 builder.Services.AddScoped<IPlantProfileService, PlantProfileDao>();
 builder.Services.AddScoped<IThresholdService, ThresholdDao>();
+builder.Services.AddScoped<INotificationClient, NotificationClient>();
 
 //Ws-client
 builder.Services.AddHostedService<BackgroundListener>();
