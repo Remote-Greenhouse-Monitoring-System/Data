@@ -55,24 +55,15 @@ public class UserDao : IUserService
 
     public async Task<User> AddUser(User user)
     {
-        
-        if (_systemContext.Users.First(u => user.Email == u.Email) != null)
-        {
-            throw new("User with this email already exists. ");
-        }
-        
-        
-        if(_systemContext.Users.First(u=>u.Username==user.Username)!=null)
-        {
-            throw new("User with this username already exists. ");
-        }
-        
+
+        ICollection<User> users;
         try
         {
             await _systemContext.Users!.AddAsync(user);
         }
-        catch (SqlException sqlException)
+        catch (Exception sqlException)
         {
+            Console.WriteLine(sqlException);
             throw new("Something went wrong when adding the user. Please try again. ");
         }
         await _systemContext.SaveChangesAsync();
