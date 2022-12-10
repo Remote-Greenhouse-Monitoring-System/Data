@@ -74,7 +74,7 @@ public class BackgroundListener : BackgroundService
             //->send received data to DB
             using var scope = _serviceProvider.CreateScope();
             var measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
-            await measurementService.AddMeasurement(m,1,1);
+            // await measurementService.AddMeasurement(m,1,1);
             //ToDo: send measurement and EUI instead of gId 
             // await measurementService.AddMeasurement(m,upLinkDto.Eui);
         }
