@@ -7,18 +7,17 @@ namespace FirebaseNotificationClient;
 
 public class NotificationClient : INotificationClient
 {
-    public async Task SendNotificationToUser(string token)
+    public async Task SendNotificationToUser(string token, string title, string body)
     {
         var message = new Message()
         {
             Notification = new Notification
             {
-                Title = "Hello android!",
-                Body = "Some notification body text, idk."
+                Title = title,
+                Body = body
             },
 
             Token = token,
-            Topic = "news"
         };
         var messaging = FirebaseMessaging.DefaultInstance;
         var result = await messaging.SendAsync(message);

@@ -8,6 +8,8 @@ public class GreenHouse {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }  
     public string Name { get; set; }
+    [JsonIgnore]
+    public string? DeviceEui { get; set; }
     
     [JsonIgnore] 
     public List<Measurement>? Measurements { get; set; } = new List<Measurement>();

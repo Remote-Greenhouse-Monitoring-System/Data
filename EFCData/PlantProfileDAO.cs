@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using System.Collections;
+using Contracts;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -89,7 +90,27 @@ public class PlantProfileDao : IPlantProfileService
 
     public async Task<ICollection<PlantProfile>> GetPreMadePlantProfiles()
     {
-        return await _greenhouseSystemContext.PlantProfiles!.ToListAsync();
+        List<string> premadeNames=new List<string>() {"Basil","Tomatoes","Sunflower","Rosemary","Cannabis Ruderalis","Blackberries"};
+        ICollection<PlantProfile> premadeProfiles = new List<PlantProfile>();
+        try
+        {
+            ICollection<PlantProfile> allProfiles= await _greenhouseSystemContext.PlantProfiles!
+                .Include(p=>p.Threshold)
+                .Where(p=>p.Id>=78)
+                .ToListAsync();
+            foreach (var p in allProfiles)
+            {
+                if(premadeNames.Contains(p.Name))
+                    premadeProfiles.Add(p);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("No premade plant profiles were found.");
+        }
+
+        return premadeProfiles;
     }
 
     public async Task<PlantProfile> GetPlantProfileById(long pId)

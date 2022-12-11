@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WsListenerBackgroundService
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirebaseNotificationClient", "FirebaseNotificationClient\FirebaseNotificationClient.csproj", "{12EE070C-ADB3-40FE-8642-17434915A391}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationRegistryStateContainer", "NotificationRegistryStateContainer\NotificationRegistryStateContainer.csproj", "{BCAB7FC2-3092-46FB-AFC5-93466B2D75BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,5 +48,9 @@ Global
 		{12EE070C-ADB3-40FE-8642-17434915A391}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12EE070C-ADB3-40FE-8642-17434915A391}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12EE070C-ADB3-40FE-8642-17434915A391}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCAB7FC2-3092-46FB-AFC5-93466B2D75BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCAB7FC2-3092-46FB-AFC5-93466B2D75BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCAB7FC2-3092-46FB-AFC5-93466B2D75BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCAB7FC2-3092-46FB-AFC5-93466B2D75BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
