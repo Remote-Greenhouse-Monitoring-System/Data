@@ -49,12 +49,14 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(requirement);
 });
 
-var defaultApp = FirebaseApp.Create(new AppOptions()
-{
-    Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "key.json")),
-});
+if (FirebaseApp.DefaultInstance == null) {
+    var defaultApp = FirebaseApp.Create(new AppOptions() {
+        Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "key.json")),
+    });
 
-Console.WriteLine(defaultApp.Name);
+    Console.WriteLine(defaultApp.Name);
+}
+
 //adding all services
 var connectionString = builder.Configuration.GetConnectionString("GreenhouseDB");
 
