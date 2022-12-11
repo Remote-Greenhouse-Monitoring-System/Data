@@ -159,7 +159,17 @@ public class BackgroundListener : BackgroundService
     public static List<string> GetChangedActions(string lastStatus, string newStatus)
     {
         //0000 light-co2-humidity-window
-        var actions = new Dictionary<int,string> {{3,"Light-action"}, {4,"Co2-action"}, {5,"Humidity-action"}, {6,"Temperature-action"}};
+        var actions = new Dictionary<int,string>
+        {
+            {0, ""}
+            ,{1, ""}
+            ,{2, ""}
+            ,{3, ""}
+            ,{4,"Light-action"}
+            ,{5,"Co2-action"}
+            ,{6,"Humidity-action"}
+            ,{7,"Temperature-action"}
+        };
 
         var changedActions = new List<string>();
         for (var i = 0; i < lastStatus.Length; i++)
@@ -170,9 +180,11 @@ public class BackgroundListener : BackgroundService
             switch (newStatus[i])
             {
                 case '0':
+                    if (actions[i].Equals("")) break;
                     changedActions.Add(actions[i]+" turned OFF");
                     break;
                 case '1':
+                    if (actions[i].Equals("")) break;
                     changedActions.Add(actions[i]+" turned ON");
                     break;
             }
