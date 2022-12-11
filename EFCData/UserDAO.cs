@@ -40,6 +40,33 @@ public class UserDao : IUserService
         }
     }
 
+    public async Task<User> GetGreenhouseUser(long gId)
+    {
+
+        GreenHouse greenHouse;
+        try
+        {
+            greenHouse = await _systemContext.GreenHouses!.FirstAsync(g => g.Id == gId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Greenhouse not found.");
+        }
+
+        try
+        {
+            return await _systemContext.Users!.FirstAsync(u => u.Id == greenHouse.UserId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception(
+                "An error occured because the user for this greenhouse wasn't found. Check the database.");
+        }
+            
+    }
+
     public async Task<User> GetUserByEmail(string email)
     {
         try

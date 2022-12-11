@@ -2,6 +2,7 @@ using System.Net.WebSockets;
 using System.Text;
 using Contracts;
 using Entities;
+using FirebaseNotificationClient;
 using Newtonsoft.Json;
 using WebSocketClients.Clients;
 using WsListenerBackgroundService.DTOs;
@@ -54,6 +55,8 @@ public class BackgroundListener : BackgroundService
         var thresholdService = scope.ServiceProvider.GetRequiredService<IThresholdService>();
         var greenhouseService = scope.ServiceProvider.GetRequiredService<IGreenHouseService>();
         var measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        var notificationClient = scope.ServiceProvider.GetRequiredService<INotificationClient>();
         //--------------
 
         //infinite-listening loop
@@ -91,13 +94,15 @@ public class BackgroundListener : BackgroundService
             await measurementService.AddMeasurement(newMeasurement,greenhouseId);
             
             //extract status and send notification if changed
-            // var newStatus = GetStatusFromReceivedData(upLinkDto.Data);
-            // if (!_lastStatus.Equals(newStatus))
-            // {
-            //     var whatActionsHappened = GetChangedActions(_lastStatus, newStatus);
-            //     //ToDo: ->sent notification 
-            // }
-            // _lastStatus = newStatus;
+            var newStatus = GetStatusFromReceivedData(upLinkDto.Data);
+            if (!_lastStatus.Equals(newStatus))
+            {
+                var whatActionsHappened = GetChangedActions(_lastStatus, newStatus);
+                var user =await userService.GetGreenhouseUser(greenhouseId);
+                await notificationClient.SendNotificationToUser(user.Token!, "An action was taken in your greenhouse.",
+                    whatActionsHappened.ToString()!);
+            }
+            _lastStatus = newStatus;
         }
         
         //close connection
