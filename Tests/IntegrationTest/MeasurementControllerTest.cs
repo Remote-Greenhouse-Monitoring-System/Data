@@ -11,6 +11,13 @@ namespace Tests.IntegrationTest;
 public class MeasurementControllerTest : IntegrationTest
 {
     private readonly string PATH = "/Measurement";
+    private readonly int GH_ID = 3;
+    private readonly int INVALID_GH_ID = 845;
+    private readonly int AMOUNT = 4;
+    private readonly int HOURS = 10;
+    private readonly int DAYS = 15;
+    private readonly int MONTH = 12;
+    private readonly int YEAR = 2022;
     
     //get measurements
 
@@ -20,7 +27,7 @@ public class MeasurementControllerTest : IntegrationTest
         //Arrange
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/all/1/4");
+        var response = await TestClient.GetAsync($"{PATH}/all/{GH_ID}/{AMOUNT}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -33,7 +40,7 @@ public class MeasurementControllerTest : IntegrationTest
         await AuthenticateAsync();
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/all/1/4");
+        var response = await TestClient.GetAsync($"{PATH}/all/{GH_ID}/{AMOUNT}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -41,13 +48,13 @@ public class MeasurementControllerTest : IntegrationTest
     }
 
     [Fact]
-    public async Task GetMeasurements_ValidToken_WithInvalidUserId_ReturnsUserNotFound()
+    public async Task GetMeasurements_ValidToken_WithInvalidGreenHouseId_ReturnsUserNotFound()
     {
         // Arrange
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/all/678/4");
+        var response = await TestClient.GetAsync($"{PATH}/all/{INVALID_GH_ID}/{AMOUNT}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -61,7 +68,7 @@ public class MeasurementControllerTest : IntegrationTest
         //Arrange
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/last/1");
+        var response = await TestClient.GetAsync($"{PATH}/last/{GH_ID}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -74,7 +81,7 @@ public class MeasurementControllerTest : IntegrationTest
         await AuthenticateAsync();
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/last/1");
+        var response = await TestClient.GetAsync($"{PATH}/last/{GH_ID}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -83,13 +90,13 @@ public class MeasurementControllerTest : IntegrationTest
     }
     
     [Fact]
-    public async Task GetLastMeasurement_ValidToken_WithInvalidUserId_ReturnsUserNotFound()
+    public async Task GetLastMeasurement_ValidToken_WithInvalidGreenHouseId_ReturnsUserNotFound()
     {
         // Arrange
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/last/215");
+        var response = await TestClient.GetAsync($"{PATH}/last/{INVALID_GH_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
@@ -102,7 +109,7 @@ public class MeasurementControllerTest : IntegrationTest
         //Arrange
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerHours/1/4");
+        var response = await TestClient.GetAsync($"{PATH}/allPerHours/{GH_ID}/{HOURS}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -115,7 +122,7 @@ public class MeasurementControllerTest : IntegrationTest
         await AuthenticateAsync();
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerHours/1/4");
+        var response = await TestClient.GetAsync($"{PATH}/allPerHours/{GH_ID}/{HOURS}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -123,13 +130,13 @@ public class MeasurementControllerTest : IntegrationTest
     }
     
     [Fact]
-    public async Task GetAllPerHour_ValidToken_WithInvalidUserId_ReturnsUserNotFound()
+    public async Task GetAllPerHour_ValidToken_WithInvalidGreenHouseId_ReturnsUserNotFound()
     {
         // Arrange
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerHours/678/4");
+        var response = await TestClient.GetAsync($"{PATH}/allPerHours/{INVALID_GH_ID}/{HOURS}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -143,7 +150,7 @@ public class MeasurementControllerTest : IntegrationTest
         //Arrange
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerDays/1/4");
+        var response = await TestClient.GetAsync($"{PATH}/allPerDays/{GH_ID}/{DAYS}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -156,7 +163,7 @@ public class MeasurementControllerTest : IntegrationTest
         await AuthenticateAsync();
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerDays/1/4");
+        var response = await TestClient.GetAsync($"{PATH}/allPerDays/{GH_ID}/{DAYS}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -164,13 +171,13 @@ public class MeasurementControllerTest : IntegrationTest
     }
     
     [Fact]
-    public async Task GetAllPerDay_ValidToken_WithInvalidUserId_ReturnsUserNotFound()
+    public async Task GetAllPerDay_ValidToken_WithInvalidGreenHouseId_ReturnsUserNotFound()
     {
         // Arrange
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerDays/678/4");
+        var response = await TestClient.GetAsync($"{PATH}/allPerDays/{INVALID_GH_ID}/{DAYS}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -184,7 +191,7 @@ public class MeasurementControllerTest : IntegrationTest
         //Arrange
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerMonth/1/12/2022");
+        var response = await TestClient.GetAsync($"{PATH}/allPerMonth/{GH_ID}/{MONTH}/{YEAR}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -197,7 +204,7 @@ public class MeasurementControllerTest : IntegrationTest
         await AuthenticateAsync();
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerMonth/1/12/2022");
+        var response = await TestClient.GetAsync($"{PATH}/allPerMonth/{GH_ID}/{MONTH}/{YEAR}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -205,13 +212,13 @@ public class MeasurementControllerTest : IntegrationTest
     }
     
     [Fact]
-    public async Task GetAllPerMonth_ValidToken_WithInvalidUserId_ReturnsUserNotFound()
+    public async Task GetAllPerMonth_ValidToken_WithInvalidGreenHouseId_ReturnsUserNotFound()
     {
         // Arrange
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerMonth/678/12/2022");
+        var response = await TestClient.GetAsync($"{PATH}/allPerMonth/{INVALID_GH_ID}/{MONTH}/{YEAR}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -225,7 +232,7 @@ public class MeasurementControllerTest : IntegrationTest
         //Arrange
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerYear/1/2022");
+        var response = await TestClient.GetAsync($"{PATH}/allPerYear/{GH_ID}/{YEAR}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -238,7 +245,7 @@ public class MeasurementControllerTest : IntegrationTest
         await AuthenticateAsync();
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerYear/1/2022");
+        var response = await TestClient.GetAsync($"{PATH}/allPerYear/{GH_ID}/{YEAR}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -246,13 +253,13 @@ public class MeasurementControllerTest : IntegrationTest
     }
     
     [Fact]
-    public async Task GetAllPerYear_ValidToken_WithInvalidUserId_ReturnsUserNotFound()
+    public async Task GetAllPerYear_ValidToken_WithInvalidGreenHouseId_ReturnsUserNotFound()
     {
         // Arrange
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/allPerYear/678/2022");
+        var response = await TestClient.GetAsync($"{PATH}/allPerYear/{INVALID_GH_ID}/{YEAR}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

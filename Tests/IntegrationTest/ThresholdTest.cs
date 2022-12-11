@@ -9,13 +9,17 @@ namespace Tests.IntegrationTest;
 
 public class ThresholdTest : IntegrationTest{
     private readonly string PATH = "/Thresholds";
+    private readonly int PLANTP_ID = 78;
+    private readonly int PLANTP_INVALID_ID = 879;
+    private readonly int GH_ID = 3;
+    private readonly int GH_INVALID_ID = 879;
     
     [Fact]
     public async Task GetThresholdForPlantProfile_InvalidToken_ReturnsUnauthorized() {
         // Arrange
         
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/get/1");
+        var response = await TestClient.GetAsync($"{PATH}/get/{PLANTP_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -27,7 +31,7 @@ public class ThresholdTest : IntegrationTest{
         await AuthenticateAsync();
         
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/get/1");
+        var response = await TestClient.GetAsync($"{PATH}/get/{PLANTP_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -44,7 +48,7 @@ public class ThresholdTest : IntegrationTest{
         await AuthenticateAsync();
         
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/get/231");
+        var response = await TestClient.GetAsync($"{PATH}/get/{PLANTP_INVALID_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
@@ -54,12 +58,12 @@ public class ThresholdTest : IntegrationTest{
     
     
     [Fact]
-    public async Task UpdateThresholdForPlantProfile_ValidToken_ValidID_ReturnThreshold() {
+    public async Task GetThresholdOnActivePlantProfile_ValidToken_ValidID_ReturnThreshold() {
         // Arrange
         await AuthenticateAsync();
         
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/activeThreshold/1");
+        var response = await TestClient.GetAsync($"{PATH}/activeThreshold/{GH_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -71,14 +75,16 @@ public class ThresholdTest : IntegrationTest{
 
 
     [Fact]
-    public async Task UpdateThresholdForPlantProfile_ValidToken_InvalidID_ReturnThreshold() {
+    public async Task GetThresholdOnActivePlantProfile_ValidToken_InvalidID_ReturnThreshold() {
         // Arrange
         await AuthenticateAsync();
 
         //Act
-        var response = await TestClient.GetAsync($"{PATH}/activeThreshold/1434");
+        var response = await TestClient.GetAsync($"{PATH}/activeThreshold/{GH_INVALID_ID}");
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
+    
+    
 }

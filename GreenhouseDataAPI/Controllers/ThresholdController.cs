@@ -48,7 +48,7 @@ public class ThresholdController : ControllerBase
     
     [HttpGet]
     [Route("activeThreshold/{gId:long}")]
-    public async Task<ActionResult<Threshold>> UpdateThresholdForPlantProfile([FromRoute] long gId)
+    public async Task<ActionResult<Threshold>> GetThresholdOnActivePlantProfile([FromRoute] long gId)
     {
         try
         {

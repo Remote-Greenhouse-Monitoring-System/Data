@@ -1,15 +1,20 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Entities;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Tests.IntegrationTest; 
 
 public class PlantProfileTest : IntegrationTest{
     private readonly string PATH = "PlantProfiles";
+    private readonly int USER_ID = 1;
+    private readonly int INVALID_USER_ID = 845;
+    private readonly int GH_ID = 3;
     
     
     // get
@@ -45,7 +50,7 @@ public class PlantProfileTest : IntegrationTest{
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/plantProfilesForUser/1");
+        var response = await TestClient.GetAsync($"{PATH}/plantProfilesForUser/{USER_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -59,7 +64,7 @@ public class PlantProfileTest : IntegrationTest{
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/plantProfilesForUser/134");
+        var response = await TestClient.GetAsync($"{PATH}/plantProfilesForUser/{INVALID_USER_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -71,7 +76,7 @@ public class PlantProfileTest : IntegrationTest{
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/PlantP/1");
+        var response = await TestClient.GetAsync($"{PATH}/PlantP/{USER_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -84,7 +89,7 @@ public class PlantProfileTest : IntegrationTest{
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/PlantP/431");
+        var response = await TestClient.GetAsync($"{PATH}/PlantP/{INVALID_USER_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -96,7 +101,7 @@ public class PlantProfileTest : IntegrationTest{
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/activated/1");
+        var response = await TestClient.GetAsync($"{PATH}/activated/{USER_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -104,14 +109,45 @@ public class PlantProfileTest : IntegrationTest{
     }
     
     [Fact]
-    public async Task GetActivePlantProfileOnGreenhouse_WhitValidToken_WithIvalidId_ReturnsNotFound(){
+    public async Task GetActivePlantProfileOnGreenhouse_WhitValidToken_WithInvalidId_ReturnsNotFound(){
         // Arrange
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/activated/1321");
+        var response = await TestClient.GetAsync($"{PATH}/activated/{GH_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    //Post - Delete
+    [Fact]
+    public async Task Add_Remove_PlantProfileOnGreenhouse_WhitValidToken_WithValidId_ReturnsPlantProfile()
+    {
+        // Arrange
+        await AuthenticateAsync();
+        var newPlantProfile = new PlantProfile()
+        {
+            Name = "TestPlantProfile",
+            Description = "TestPlantProfile",
+            OptimalTemperature = 20,
+            OptimalHumidity = 20,
+            OptimalCo2 = 20,
+            OptimalLight = 20,
+        };
+        
+        // Act
+        var response = await TestClient.PostAsync($"{PATH}/add/{USER_ID}", new StringContent(JsonConvert.SerializeObject(newPlantProfile), Encoding.UTF8, "application/json"));
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.Content.Should().NotBeNull();
+        newPlantProfile.Id = response.Content.ReadAsAsync<PlantProfile>().Result.Id;
+        
+        //cleanup
+        var responseDelete = await TestClient.DeleteAsync($"{PATH}/remove/{newPlantProfile.Id}");
+        responseDelete.StatusCode.Should().Be(HttpStatusCode.OK);
+        (await responseDelete.Content.ReadAsAsync<PlantProfile>()).Should().NotBeNull();
+        
     }
 }

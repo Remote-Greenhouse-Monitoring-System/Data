@@ -1,8 +1,10 @@
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Entities;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Tests.IntegrationTest;
@@ -125,6 +127,32 @@ public class UserTest : IntegrationTest {
         var response = await TestClient.GetAsync($"{PATH}/login?email={EMAIL}&password=123");
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+    }
+    
+    //Post - Delete
+    [Fact]
+    public async Task Add_Remove_User_WithValidToken_WithValidId_ReturnsUser() {
+        // Arrange
+        await AuthenticateAsync();
+        var newUser = new User()
+        {
+            Username = "test",
+            Password = "test",
+            Email = "test@test.com"
+        };
+        
+        // Act
+        var response = await TestClient.PostAsync($"{PATH}/add", new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json"));
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.Content.Should().NotBeNull();
+        newUser.Id = response.Content.ReadAsAsync<User>().Result.Id;
+        
+        //cleanup
+        var responseDelete = await TestClient.DeleteAsync($"{PATH}/remove/{newUser.Id}");
+        responseDelete.StatusCode.Should().Be(HttpStatusCode.OK);
+        (await responseDelete.Content.ReadAsAsync<User>()).Should().NotBeNull();
     }
     
 }
