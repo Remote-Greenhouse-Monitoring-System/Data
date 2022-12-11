@@ -12,16 +12,16 @@ public class IntegrationTest {
     protected readonly HttpClient TestClient;
 
     protected IntegrationTest() {
-        var appFactory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => {
-                builder.ConfigureServices(services => {
-                    services.RemoveAll(typeof(GreenhouseSystemContext));
-                    services.AddDbContext<GreenhouseSystemContext>(options => {
-                        options.UseInMemoryDatabase("TestDb");
+        if (TestClient == null) {
+            var appFactory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder => {
+                    builder.ConfigureServices(services => {
+                        services.RemoveAll(typeof(GreenhouseSystemContext));
+                        services.AddDbContext<GreenhouseSystemContext>(options => { options.UseInMemoryDatabase("TestDb"); });
                     });
                 });
-            });
-        TestClient = appFactory.CreateClient();
+            TestClient = appFactory.CreateClient();
+        }
     }
 
     protected async Task AuthenticateAsync() {

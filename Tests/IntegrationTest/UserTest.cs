@@ -31,10 +31,10 @@ public class UserTest : IntegrationTest {
     public async Task GetUserByUsername_ValidToken_ValidUserName_ReturnsUser() {
         // Arrange
         await AuthenticateAsync();
-
+    
         // Act
         var response = await TestClient.GetAsync($"{PATH}/byUsername/{USER_NAME}");
-
+    
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         (await response.Content.ReadAsAsync<User>()).Should().NotBeNull();
@@ -126,26 +126,5 @@ public class UserTest : IntegrationTest {
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
-
-    // [Fact]
-    // public async Task AddUser_ValidToken_ValidUser_ReturnsUser() {
-    //     // Arrange
-    //     await AuthenticateAsync();
-    //
-    //     // Act
-    //     // call the Post method with a body new user object as a json
-    // }
-    //
-    // [Fact]
-    // async Task RemoveUser_ValidToken_ValidId_ReturnsOk() {
-    //     // Arrange
-    //     await AuthenticateAsync();
-    //
-    //     // Act
-    //     var response = await TestClient.DeleteAsync($"{PATH}/remove/86");
-    //
-    //     // Assert
-    //     response.StatusCode.Should().Be(HttpStatusCode.OK);
-    //
-    // }
+    
 }
