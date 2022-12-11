@@ -34,7 +34,6 @@ public class BackgroundListener : BackgroundService
     // }
     
     //ExecuteAsync()
-    private string _lastStatusBits = "00000000";
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         //open connection:
@@ -57,16 +56,18 @@ public class BackgroundListener : BackgroundService
 
         //infinite-listening loop
         var uplinkJson = "";
+        var lastStatusBits = "00000000";
         while (!stoppingToken.IsCancellationRequested)
         {
             //waiting for message/measurements
             Console.WriteLine("Waiting for measurements ... " + DateTime.Now);
             //receive message
-            Byte[] buffer = new byte[256];
+            var buffer = new byte[256];
             var receiveResult = await _clientWebSocket.ReceiveAsync(buffer, CancellationToken.None);
             uplinkJson += Encoding.UTF8.GetString(buffer);
-            
             if (!receiveResult.EndOfMessage) continue;
+            
+            // uplinkJson = "{\"cmd\":\"rx\",\"EUI\":\"0004A30B00E8355E\",\"ts\":1470850675433,\"ack\":false,\"fcnt\":1,\"port\":1,\"data\":\"00e1014b032f10\"}";
             Console.WriteLine("received: " + uplinkJson);
 
             //->deserialize into UplinkDTO-object
@@ -89,12 +90,12 @@ public class BackgroundListener : BackgroundService
 
             //extract status and send notification if changed
             var newStatusBits = GetStatusFromReceivedData(upLinkDto.Data);
-            if (!_lastStatusBits.Equals(newStatusBits))
+            if (!lastStatusBits.Equals(newStatusBits))
             {
-                var whatActionsHappened = GetChangedActions(_lastStatusBits, newStatusBits);
+                var whatActionsHappened = GetChangedActions(lastStatusBits, newStatusBits);
                 //ToDo: ->send notification here
             }
-            _lastStatusBits = newStatusBits;
+            lastStatusBits = newStatusBits;
         }
         
         //close connection
@@ -117,11 +118,11 @@ public class BackgroundListener : BackgroundService
             EUI = eui,
             port = port,
             confirmed = true,
+            // data = "000000000000000000000000"
             data = GetHexStringFromThreshold(threshold)
-            // data = "001b001d"
         };
         //convert to json
-        string downLinkJson = JsonConvert.SerializeObject(downLinkDto);
+        var downLinkJson = JsonConvert.SerializeObject(downLinkDto);
         // const string downLinkJson = "{\"cmd\"  : \"tx\",\"EUI\"  : \"0004A30B00E8355E\",\"port\" : 2,\"confirmed\" : false,\"data\" : \"001b001d\"}";
         await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(downLinkJson), WebSocketMessageType.Text, true, CancellationToken.None);
         await Console.Out.WriteLineAsync("DownLink sent: " + downLinkJson);
@@ -158,7 +159,7 @@ public class BackgroundListener : BackgroundService
     public static List<string> GetChangedActions(string lastStatus, string newStatus)
     {
         //0000 light-co2-humidity-window
-        var actions = new[] { "Light-action", "Co2-action", "Humidity-action", "Temperature-action"};
+        var actions = new Dictionary<int,string> {{3,"Light-action"}, {4,"Co2-action"}, {5,"Humidity-action"}, {6,"Temperature-action"}};
 
         var changedActions = new List<string>();
         for (var i = 0; i < lastStatus.Length; i++)
@@ -169,20 +170,21 @@ public class BackgroundListener : BackgroundService
             switch (newStatus[i])
             {
                 case '0':
-                    changedActions.Add(actions[i-4]+" turned OFF");
+                    changedActions.Add(actions[i]+" turned OFF");
                     break;
                 case '1':
-                    changedActions.Add(actions[i-4]+" turned ON");
+                    changedActions.Add(actions[i]+" turned ON");
                     break;
             }
         }
-
         return changedActions;
     }
     
     public static string GetHexStringFromThreshold(Threshold thresholds)
     {
-        //ToDo: light missing ...?
+        //if threshold equals new/=empty threshold ->return zeros ...?
+        if (thresholds.Equals(new Threshold()))
+            return "000000000000000000000000";
 
         var thresholdHexString = "";
         thresholdHexString += ((int)(thresholds.TemperatureMax *10)).ToString("X4");
