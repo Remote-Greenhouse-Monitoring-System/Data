@@ -5,7 +5,7 @@ namespace Contracts;
 public interface IPlantProfileService
 {
     public Task<PlantProfile> AddPlantProfile(PlantProfile plantP, long userId);
-    public Task RemovePlantProfile(long pId);
+    public Task<PlantProfile> RemovePlantProfile(long pId);
     public Task<PlantProfile> UpdatePlantProfile(PlantProfile plantP);
     public Task<ICollection<PlantProfile>> GetUserPlantProfiles(long uId);
     public Task<ICollection<PlantProfile>> GetPreMadePlantProfiles();
