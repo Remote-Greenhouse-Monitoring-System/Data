@@ -22,7 +22,7 @@ public class GreenHouseDao : IGreenHouseService{
         _greenhouseSystemContext = greenhouseSystemContext;
     }
 
-    public async Task AddGreenHouse(long uid, GreenHouse greenHouse) {
+    public async Task<GreenHouse> AddGreenHouse(long uid, GreenHouse greenHouse) {
         await _greenhouseSystemContext!.GreenHouses!.AddAsync(greenHouse);
         User user;
         try
@@ -38,9 +38,10 @@ public class GreenHouseDao : IGreenHouseService{
         user.GreenHouses!.Add(greenHouse);
          _greenhouseSystemContext.Users!.Update(user);
          await _greenhouseSystemContext.SaveChangesAsync();
+         return greenHouse;
     }
 
-    public async Task RemoveGreenHouse(long gid)
+    public async Task<GreenHouse> RemoveGreenHouse(long gid)
     {
         GreenHouse? greenHouse;
         try
@@ -52,11 +53,14 @@ public class GreenHouseDao : IGreenHouseService{
             Console.WriteLine(e);
             throw new Exception("Greenhouse could not be found.");
         }
+
+        GreenHouse aux = greenHouse!;
         _greenhouseSystemContext.GreenHouses!.Remove(greenHouse!);
         await _greenhouseSystemContext.SaveChangesAsync();
+        return aux;
     }
 
-    public async Task UpdateGreenHouse(GreenHouse greenHouse) {
+    public async Task<GreenHouse> UpdateGreenHouse(GreenHouse greenHouse) {
         try
         {
             _greenhouseSystemContext.GreenHouses!.Update(greenHouse);
@@ -67,7 +71,7 @@ public class GreenHouseDao : IGreenHouseService{
             throw new Exception("Greenhouse could not be found.");
         }
         await _greenhouseSystemContext.SaveChangesAsync();
-        
+        return greenHouse;
     }
 
     public async Task<ICollection<GreenHouse>> GetGreenHouses(long uid)

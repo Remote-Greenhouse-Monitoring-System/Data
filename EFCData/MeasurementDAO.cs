@@ -76,12 +76,14 @@ public class MeasurementDao : IMeasurementService
 
     
     //upload:
-    public async Task AddMeasurement(Measurement measurement, long gId, long pId)
+    public async Task AddMeasurement(Measurement measurement, long gId)
     {
         GreenHouse greenHouse;
         try
         {
-            greenHouse=await _greenhouseSystemContext.GreenHouses!.FirstAsync(g=>g.Id==gId);
+            greenHouse=await _greenhouseSystemContext.GreenHouses!.Include(g=>g.ActivePlantProfile)
+                .Include(g=>g.Measurements)
+                .FirstAsync(g=>g.Id==gId);
         }
         catch (Exception e)
         {
@@ -91,19 +93,24 @@ public class MeasurementDao : IMeasurementService
         
         greenHouse.Measurements!.Add(measurement);
          _greenhouseSystemContext.Update(greenHouse);
+         if (greenHouse.ActivePlantProfile != null)
+         {
+             PlantProfile profile;
+             try
+             {
+                 profile = await _greenhouseSystemContext.PlantProfiles!.FirstAsync(p =>
+                     p.Id == greenHouse.ActivePlantProfile!.Id);
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine(e);
+                 throw new Exception("Plant profile not found.");
+             }
 
-         PlantProfile profile;
-         try
-         {
-             profile=await _greenhouseSystemContext.PlantProfiles!.FirstAsync(p => p.Id == pId);
+             profile.Measurements!.Add(measurement);
+             _greenhouseSystemContext.Update(profile);
          }
-         catch (Exception e)
-         {
-             Console.WriteLine(e);
-             throw new Exception("Plant profile not found.");
-         }
-         profile.Measurements!.Add(measurement);
-         _greenhouseSystemContext.Update(profile);
+
         await _greenhouseSystemContext.Measurements!.AddAsync(measurement);
         await _greenhouseSystemContext.SaveChangesAsync();
         await Console.Out.WriteLineAsync("MeasurementDAO: " + measurement +" added to DB");

@@ -88,7 +88,7 @@ public class BackgroundListener : BackgroundService
             var newMeasurement = ReceivedDataToMeasurement(upLinkDto.Data);
             //ToDo: get real pId instead
             // await measurementService.AddMeasurement(newMeasurement,greenhouseId, greenhouseService.GetActivePlantProfileId(greenhouseId));
-            await measurementService.AddMeasurement(newMeasurement,greenhouseId,1);
+            await measurementService.AddMeasurement(newMeasurement,greenhouseId);
             
             //extract status and send notification if changed
             // var newStatus = GetStatusFromReceivedData(upLinkDto.Data);
