@@ -1,7 +1,9 @@
 ﻿using System.Data.Common;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Protocols;
 
 namespace EFCData;
 
@@ -13,18 +15,32 @@ public class GreenhouseSystemContext : DbContext
     public DbSet<User>? Users { get; set; } = null!;
     public DbSet<Threshold>? Thresholds { get; set; } = null!;
 
+    protected readonly IConfiguration Configuration;
+    
 
-    public GreenhouseSystemContext(DbContextOptions options) : base(options)
+    public GreenhouseSystemContext(IConfiguration configuration)
     {
+        Configuration = configuration;
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(Configuration.GetConnectionString("GreenhouseDB"));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Measurement>().HasKey(m => m.Id);
+        
         modelBuilder.Entity<GreenHouse>().HasKey(g => g.Id);
+
         modelBuilder.Entity<PlantProfile>().HasKey(p => p.Id);
+        
         modelBuilder.Entity<User>().HasKey(u => u.Id);
+        
         modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+        modelBuilder.Entity<User>().HasIndex(u => u.Token).IsUnique();
+        
         modelBuilder.Entity<Threshold>().HasKey(t => t.Id);
     }
 }

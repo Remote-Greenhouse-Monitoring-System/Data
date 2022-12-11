@@ -72,6 +72,7 @@ public class PlantProfileController : ControllerBase
     }
 
     [HttpGet]
+    [Route("preMadeProfiles")]
     public async Task<ActionResult<ICollection<PlantProfile>>> GetPremadePlantProfiles()
     {
         try {

@@ -56,7 +56,9 @@ var defaultApp = FirebaseApp.Create(new AppOptions()
 
 Console.WriteLine(defaultApp.Name);
 //adding all services
-builder.Services.AddDbContext<GreenhouseSystemContext>(options=>options.UseSqlServer("name=ConnectionStrings:GreenhouseDB"));
+var connectionString = builder.Configuration.GetConnectionString("GreenhouseDB");
+
+builder.Services.AddDbContext<GreenhouseSystemContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDao>();
 builder.Services.AddScoped<IUserService, UserDao>();
 builder.Services.AddScoped<IGreenHouseService, GreenHouseDao>();

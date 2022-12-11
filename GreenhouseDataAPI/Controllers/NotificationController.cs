@@ -1,3 +1,4 @@
+using Contracts;
 using FirebaseNotificationClient;
 using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,11 @@ namespace GreenhouseDataAPI.Controllers;
 public class NotificationController : ControllerBase
 {
     private INotificationClient _notificationClient;
-
-    public NotificationController(INotificationClient notificationClient)
+    private IUserService _userService;
+    public NotificationController(INotificationClient notificationClient, IUserService userService)
     {
         _notificationClient = notificationClient;
+        _userService = userService;
     }
 
     [HttpPost]
@@ -21,7 +23,8 @@ public class NotificationController : ControllerBase
     {
         try
         {
-            await _notificationClient.SendNotificationToUser(token);
+            await _notificationClient.SendNotificationToUser(token,"Hello","android team!");
+            await _userService.SetTokenForUser(uId,token);
             return Ok();
         }
         catch (Exception e)

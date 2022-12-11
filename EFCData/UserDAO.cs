@@ -59,6 +59,7 @@ public class UserDao : IUserService
         ICollection<User> users;
         try
         {
+            user.Token = null;
             await _systemContext.Users!.AddAsync(user);
         }
         catch (Exception sqlException)
@@ -125,5 +126,23 @@ public class UserDao : IUserService
             return user;
         }
         throw new Exception("The credentials provided are incorrect.");
+    }
+
+    public async Task SetTokenForUser(long uId, string token)
+    {
+        User user;
+        try
+        {
+            user = await _systemContext.Users!.FirstAsync(u => u.Id == uId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("User not found.");
+        }
+
+        user.Token = token;
+        _systemContext.Users!.Update(user);
+        await _systemContext.SaveChangesAsync();
     }
 }
