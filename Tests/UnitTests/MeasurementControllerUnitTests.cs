@@ -1,13 +1,9 @@
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Results;
 using Contracts;
 using Entities;
 using GreenhouseDataAPI.Controllers;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Assert = NUnit.Framework.Assert;
 
 namespace Tests;
 
@@ -15,7 +11,7 @@ namespace Tests;
 public class MeasurementControllerUnitTests
 {
     [TestMethod]
-    public void GetLastMeasurementReturnsLastMeasurement()
+    public async Task GetLastMeasurementReturnsLastMeasurement()
     {
         // Arrange
         var mockService = new Mock<IMeasurementService>();
@@ -25,12 +21,12 @@ public class MeasurementControllerUnitTests
         var controller = new MeasurementController(mockService.Object);
 
         // Act
-        ActionResult<Measurement> actionResult = controller.GetLastMeasurement(1).Result;
+        var actionResult = await controller.GetLastMeasurement(1);
 
         // Assert
         Assert.IsNotNull(actionResult);
         Assert.IsNotNull(actionResult.Result);
-        // Assert.IsTrue(actionResult.Result?.GetType() == typeof(Measurement));
+        Assert.AreEqual(typeof(Measurement), actionResult.Value.GetType());
     }
     
 }

@@ -17,17 +17,15 @@ public class Measurement
     {
     }
 
-    public Measurement(float temperature, float humidity, float co2, int light)
+    public Measurement(long gId, float temperature, float humidity, float co2, int light)
     {
+        GreenhouseId = gId;
         Temperature = temperature;
         Humidity = humidity;
         Co2 = co2;
         Light = light;
         Timestamp = DateTime.Now;
         // Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(ts).DateTime;
-        
-        //Todo: should we set it as the device's EUI ?
-        GreenhouseId = 1;
     }
 
     public override string ToString()
