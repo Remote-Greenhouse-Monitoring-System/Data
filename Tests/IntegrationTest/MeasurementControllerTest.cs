@@ -50,7 +50,8 @@ public class MeasurementControllerTest : IntegrationTest
         var response = await TestClient.GetAsync($"{PATH}/all/678/4");
         
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        (await response.Content.ReadAsAsync<ICollection<Measurement>>()).Should().BeEmpty();
     }
 
     //get last measurement
@@ -131,7 +132,8 @@ public class MeasurementControllerTest : IntegrationTest
         var response = await TestClient.GetAsync($"{PATH}/allPerHours/678/4");
         
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        (await response.Content.ReadAsAsync<ICollection<Measurement>>()).Should().BeEmpty();
     }
     
     //get all per day
@@ -171,7 +173,8 @@ public class MeasurementControllerTest : IntegrationTest
         var response = await TestClient.GetAsync($"{PATH}/allPerDays/678/4");
         
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        (await response.Content.ReadAsAsync<ICollection<Measurement>>()).Should().BeEmpty();
     }
     
     //get all per month
@@ -251,6 +254,7 @@ public class MeasurementControllerTest : IntegrationTest
         var response = await TestClient.GetAsync($"{PATH}/allPerYear/678/2022");
         
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        (await response.Content.ReadAsAsync<ICollection<Measurement>>()).Should().BeEmpty();
     }
 }
