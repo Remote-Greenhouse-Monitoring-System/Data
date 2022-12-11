@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using System.Collections;
+using Contracts;
 using Entities;
 using GreenhouseDataAPI.Attributes;
 using Microsoft.AspNetCore.Mvc;
@@ -62,12 +63,16 @@ public class PlantProfileController : ControllerBase
     [Route("plantProfilesForUser/{uId:long}")]
     public async Task<ActionResult<ICollection<PlantProfile>>> GetUserPlantProfile([FromRoute] long uId)
     {
+        List<PlantProfile> allProfiles = new List<PlantProfile>();
         try {
             ICollection<PlantProfile> plantProfiles = await _plantProfileService.GetUserPlantProfiles(uId);
-            return Ok(plantProfiles);
+            ICollection<PlantProfile> preMadePlantProfiles = await _plantProfileService.GetPreMadePlantProfiles();
+            allProfiles.AddRange(preMadePlantProfiles);
+            allProfiles.AddRange(plantProfiles);
+            return Ok(allProfiles);
         }
         catch (Exception e) {
-            return StatusCode(404,e.Message);
+            return StatusCode(505,e.Message);
         }
     }
 
