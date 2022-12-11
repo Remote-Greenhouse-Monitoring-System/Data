@@ -2,6 +2,7 @@ using System.Net.WebSockets;
 using System.Text;
 using Contracts;
 using Entities;
+using FirebaseNotificationClient;
 using Newtonsoft.Json;
 using WebSocketClients.Clients;
 using WsListenerBackgroundService.DTOs;
@@ -52,6 +53,8 @@ public class BackgroundListener : BackgroundService
         var thresholdService = scope.ServiceProvider.GetRequiredService<IThresholdService>();
         var greenhouseService = scope.ServiceProvider.GetRequiredService<IGreenHouseService>();
         var measurementService = scope.ServiceProvider.GetRequiredService<IMeasurementService>();
+        var notificationClient = scope.ServiceProvider.GetRequiredService<INotificationClient>();
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
         //--------------
 
         //infinite-listening loop
@@ -93,7 +96,12 @@ public class BackgroundListener : BackgroundService
             if (!lastStatusBits.Equals(newStatusBits))
             {
                 var whatActionsHappened = GetChangedActions(lastStatusBits, newStatusBits);
-                //ToDo: ->send notification here
+                var user =await userService.GetGreenhouseUser(greenhouseId);
+                if (user.Token != null)
+                {
+                    await notificationClient.SendNotificationToUser(user.Token!,
+                        "An action has been taken in your greenhouse.", whatActionsHappened.ToString()!);
+                }
             }
             lastStatusBits = newStatusBits;
         }
