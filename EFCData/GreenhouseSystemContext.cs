@@ -33,8 +33,10 @@ public class GreenhouseSystemContext : DbContext
         modelBuilder.Entity<Measurement>().HasKey(m => m.Id);
         
         modelBuilder.Entity<GreenHouse>().HasKey(g => g.Id);
+        modelBuilder.Entity<GreenHouse>().HasIndex(g => g.DeviceEui).IsUnique();
 
         modelBuilder.Entity<PlantProfile>().HasKey(p => p.Id);
+        
         
         modelBuilder.Entity<User>().HasKey(u => u.Id);
         
