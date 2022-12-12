@@ -105,26 +105,28 @@ public class BackgroundListener : BackgroundService
     
     
     //------------ convert/retrieve methods -------------
-    private const int ByteSize = 2;
+    private const int OneByte = 2;
+    private const int TwoBytes = 4;
+    private const int FourBytes = 8;
     public static Measurement GetMeasurementFromReceivedData(string data)
     {
         var i = 0;
         
-        var temperature = Convert.ToInt16(data.Substring(i,ByteSize*2),16) / 10.0;
-        i += ByteSize * 2;
-        var humidity = Math.Round(Convert.ToInt16(data.Substring(i,ByteSize*2),16) / 10.0, 1);
-        i += ByteSize * 2;
-        var co2 = Convert.ToInt16(data.Substring(i,ByteSize*2),16);
-        // i += ByteSize * 2;
-        // var light = Convert.ToInt16(data.Substring(i,ByteSize*4),16);
+        var temperature = Convert.ToInt16(data.Substring(i,TwoBytes),16) / 10.0;
+        i += TwoBytes;
+        var humidity = Math.Round(Convert.ToInt16(data.Substring(i,TwoBytes),16) / 10.0, 1);
+        i += TwoBytes;
+        var co2 = Convert.ToInt16(data.Substring(i,TwoBytes),16);
+        i += TwoBytes;
+        var light = Convert.ToInt16(data.Substring(i,FourBytes),16);
 
-        // return new Measurement((float)temperature, (float)humidity, co2, light);
-        return new Measurement((float)temperature, (float)humidity, co2, 1);
+        return new Measurement((float)temperature, (float)humidity, co2, light);
     }
 
     public static string GetStatusFromReceivedData(string data)
     {
-        var statusInt = Convert.ToInt16(data.Substring(6 * ByteSize, ByteSize), 16);
+        const int statusStartIndex = 3*TwoBytes + 1*FourBytes;
+        var statusInt = Convert.ToInt16(data.Substring(statusStartIndex, OneByte), 16);
         var statusBits = Convert.ToString(statusInt, 2).PadLeft(8, '0');
         return statusBits;
     }

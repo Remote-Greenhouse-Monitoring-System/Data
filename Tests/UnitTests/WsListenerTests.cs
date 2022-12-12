@@ -29,10 +29,11 @@ public class WsListenerTests
     [TestMethod]
     public void GetMeasurementFromReceivedDataReturnsMeasurement()
     {
-        var m = BackgroundListener.GetMeasurementFromReceivedData("00ef01c5060d10");
+        var m = BackgroundListener.GetMeasurementFromReceivedData("00ef01c5060d0000007b10");
         Assert.AreEqual( 23.9, Math.Round(m.Temperature, 1));
         Assert.AreEqual(45.3, Math.Round(m.Humidity), 1);
         Assert.AreEqual(1549, m.Co2);
+        Assert.AreEqual(123, m.Light);
     }
     
     [TestMethod]
@@ -47,8 +48,8 @@ public class WsListenerTests
     [TestMethod]
     public void GetStatusFromReceivedDataReturnsNewStatus()
     {
-        var newStatusBits = BackgroundListener.GetStatusFromReceivedData("00ef01c5060d10");
-        Assert.AreEqual("00010000", newStatusBits);
+        var newStatusBits = BackgroundListener.GetStatusFromReceivedData("00ef01c5060d0000007b08");
+        Assert.AreEqual("00001000", newStatusBits);
     }
 
     [TestMethod]
