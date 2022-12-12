@@ -12,6 +12,7 @@ public class PlantProfile
     public float OptimalTemperature { get; set; }
     public float OptimalHumidity { get; set; }
     public float OptimalCo2 { get; set; }
+    public bool IsPreMade { get; set; } = false;
     public int OptimalLight { get; set; }
     [JsonIgnore]
     public Threshold Threshold { get; set; }
