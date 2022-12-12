@@ -60,8 +60,8 @@ public class BackgroundListener : BackgroundService
             
             var greenhouseId = greenhouseService.GetGreenhouseIdByEui(upLinkDto.Eui);
             //extract measurements and send to DB
-            var newMeasurement = GetMeasurementFromReceivedData(greenhouseId, upLinkDto.Data);
-            await measurementService.AddMeasurement(newMeasurement,greenhouseId);
+            var newMeasurement = GetMeasurementFromReceivedData(upLinkDto.Data);
+            await measurementService.AddMeasurement(newMeasurement, greenhouseId);
 
             //send response/=thresholds [DownLink]
             var threshold = await thresholdService.GetThresholdOnActivePlantProfile(greenhouseId);
@@ -106,7 +106,7 @@ public class BackgroundListener : BackgroundService
     
     //------------ convert/retrieve methods -------------
     private const int ByteSize = 2;
-    public static Measurement GetMeasurementFromReceivedData(long gId, string data)
+    public static Measurement GetMeasurementFromReceivedData(string data)
     {
         var i = 0;
         
@@ -119,7 +119,7 @@ public class BackgroundListener : BackgroundService
         // var light = Convert.ToInt16(data.Substring(i,ByteSize*4),16);
 
         // return new Measurement((float)temperature, (float)humidity, co2, light);
-        return new Measurement(gId, (float)temperature, (float)humidity, co2, 1);
+        return new Measurement((float)temperature, (float)humidity, co2, 1);
     }
 
     public static string GetStatusFromReceivedData(string data)

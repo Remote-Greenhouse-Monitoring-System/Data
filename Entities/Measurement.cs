@@ -17,9 +17,8 @@ public class Measurement
     {
     }
 
-    public Measurement(long gId, float temperature, float humidity, float co2, int light)
+    public Measurement(float temperature, float humidity, float co2, int light)
     {
-        GreenhouseId = gId;
         Temperature = temperature;
         Humidity = humidity;
         Co2 = co2;
