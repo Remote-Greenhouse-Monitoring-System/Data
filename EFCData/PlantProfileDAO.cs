@@ -90,19 +90,14 @@ public class PlantProfileDao : IPlantProfileService
 
     public async Task<ICollection<PlantProfile>> GetPreMadePlantProfiles()
     {
-        List<string> premadeNames=new List<string>() {"Basil","Tomatoes","Sunflower","Rosemary","Cannabis Ruderalis","Blackberries"};
+        
         ICollection<PlantProfile> premadeProfiles = new List<PlantProfile>();
         try
         {
-            ICollection<PlantProfile> allProfiles= await _greenhouseSystemContext.PlantProfiles!
+             premadeProfiles= await _greenhouseSystemContext.PlantProfiles!
                 .Include(p=>p.Threshold)
-                .Where(p=>p.Id>=78)
+                .Where(p=>p.IsPreMade==true)
                 .ToListAsync();
-            foreach (var p in allProfiles)
-            {
-                if(premadeNames.Contains(p.Name))
-                    premadeProfiles.Add(p);
-            }
         }
         catch (Exception e)
         {
