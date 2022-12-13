@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
         <PackageReference Include="FirebaseAdmin" Version="2.3.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
           <PrivateAssets>all</PrivateAssets>
@@ -46,6 +47,9 @@
         <None Update="key.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Utilities" />
     </ItemGroup>
 
     <PropertyGroup><ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles></PropertyGroup>

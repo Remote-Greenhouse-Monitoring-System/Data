@@ -51,7 +51,8 @@ builder.Services.AddSwaggerGen(c =>
 
 if (FirebaseApp.DefaultInstance == null) {
     var defaultApp = FirebaseApp.Create(new AppOptions() {
-        Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "key.json")),
+        Credential = GoogleCredential
+            .FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "key.json")),
     });
 
     Console.WriteLine(defaultApp.Name);
