@@ -32,4 +32,19 @@ public class NotificationController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    [HttpPatch]
+    [Route("unregister/{uId:long}")]
+    public async Task<ActionResult> UnregisterUser([FromRoute] long uId)
+    {
+        try
+        {
+            await _userService.RemoveTokenFromUser(uId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, e.Message);
+        }
+    }
 }
