@@ -1,0 +1,19 @@
+/***** Test For Fact Table***********/
+USE [GreenhouseSystemDBTest]
+GO
+
+SELECT COUNT(id) as 'Number of measurements in DB source Test'  FROM GreenhouseSystemDBTest.dbo.Measurements 
+SELECT COUNT(M_ID) as 'Number of measurements in Fact table' FROM edw.FactMeasurement 
+
+SELECT AVG(Temperature) as 'Average temerature in DB source Test'  FROM GreenhouseSystemDBTest.dbo.Measurements 
+SELECT AVG(Temperature) as 'Average temerature in Fact table' FROM edw.FactMeasurement 
+
+SELECT AVG(Co2) as 'Average CO2 in DB source Test'  FROM GreenhouseSystemDBTest.dbo.Measurements 
+SELECT AVG(Co2) as 'Average CO2 in Fact table' FROM edw.FactMeasurement 
+
+SELECT AVG(Humidity) as 'Average Humidity  in DB source Test'  FROM GreenhouseSystemDBTest.dbo.Measurements 
+SELECT AVG(Humidity) as 'Average Humidity in Fact table' FROM edw.FactMeasurement 
+
+SELECT MAX(light) as 'Max Light in DB source Test'  FROM GreenhouseSystemDBTest.dbo.Measurements 
+SELECT Max(light) as 'Max Light in Fact table' FROM edw.FactMeasurement 
+
