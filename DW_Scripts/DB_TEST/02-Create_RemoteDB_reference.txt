@@ -1,0 +1,75 @@
+CREATE EXTERNAL TABLE [dbo].[Thresholds_Ext](
+	[Id] [bigint]  NOT NULL,
+	[HumidityMin] [real] NOT NULL,
+	[HumidityMax] [real] NOT NULL,
+	[Co2Min] [real] NOT NULL,
+	[Co2Max] [real] NOT NULL,
+	[TemperatureMin] [real] NOT NULL,
+	[TemperatureMax] [real] NOT NULL,
+	)
+WITH
+( 
+ DATA_SOURCE = RemoteReferenceDB,
+ SCHEMA_NAME='dbo',
+ OBJECT_NAME='Thresholds'); 
+
+/********************************************/
+
+CREATE EXTERNAL TABLE [dbo].[Users_Ext](
+	[Id] [bigint]  NOT NULL,
+	[Username] [nvarchar](max) NULL,
+	[Password] [nvarchar](max) NULL,
+	[Email] [nvarchar](450) NULL,
+	)
+	WITH( 
+ DATA_SOURCE = RemoteReferenceDB,
+ SCHEMA_NAME='dbo',
+ OBJECT_NAME='Users'); 
+
+/**********************************************/
+CREATE EXTERNAL TABLE [dbo].[PlantProfiles_Ext](
+	[Id] [bigint]  NOT NULL,
+	[Name] [nvarchar](max) NOT NULL,
+	[Description] [nvarchar](max) NOT NULL,
+	[OptimalTemperature] [real] NOT NULL,
+	[OptimalHumidity] [real] NOT NULL,
+	[OptimalCo2] [real] NOT NULL,
+	[OptimalLight] [int] NOT NULL,
+	[ThresholdId] [bigint] NOT NULL,
+	[UserId] [bigint] NULL,
+	)
+	WITH ( 
+ DATA_SOURCE = RemoteReferenceDB,
+ SCHEMA_NAME='dbo',
+ OBJECT_NAME='PlantProfiles');
+/*********************************************/
+
+CREATE EXTERNAL TABLE [dbo].[GreenHouses_Ext](
+	[Id] [bigint]  NOT NULL,
+	[Name] [nvarchar](max) NOT NULL,
+	[ActivePlantProfileId] [bigint] NULL,
+	[UserId] [bigint] NULL,
+	)
+	WITH
+( 
+ DATA_SOURCE = RemoteReferenceDB,
+ SCHEMA_NAME='dbo',
+ OBJECT_NAME='GreenHouses'); 
+/******************************************************/
+
+CREATE EXTERNAL TABLE [dbo].[Measurements_Ext](
+	[Id] [bigint]  NOT NULL,
+	[GreenhouseId] [bigint] NOT NULL,
+	[Temperature] [real] NOT NULL,
+	[Humidity] [real] NOT NULL,
+	[Co2] [real] NOT NULL,
+	[Light] [int] NOT NULL,
+	[Timestamp] [datetime2](7) NOT NULL,
+	[PlantProfileId] [bigint] NULL,
+	)
+	WITH
+( 
+ DATA_SOURCE = RemoteReferenceDB,
+ SCHEMA_NAME='dbo',
+ OBJECT_NAME='Measurements'); 
+/*******************************************************/

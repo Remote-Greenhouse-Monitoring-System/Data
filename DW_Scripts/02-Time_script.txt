@@ -1,0 +1,21 @@
+use GreenhouseSystemDW
+GO
+
+DECLARE @StartTime TIME;
+Declare @i int;
+SET @StartTime= '00:00';
+SET @i=0;
+WHILE @i<1440
+  BEGIN 
+   INSERT INTO GreenhouseSystemDW.edw.DimTime
+                ([Time],[Hour],[Minute])   
+           SELECT
+		   @StartTime as [Time],
+		   DATEPART(HOUR, @StartTime) as [Hour],
+		   DATEPART(Minute, @StartTime) as [Minute]	    
+  SET @StartTime= DATEADD(MINUTE, 1, @StartTime);
+  SET @i+=1;
+  END
+
+
+
