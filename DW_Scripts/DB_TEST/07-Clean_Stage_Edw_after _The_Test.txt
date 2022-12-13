@@ -1,0 +1,13 @@
+/***** Script to clean the stage and edw for the next test****************/
+USE [GreenhouseSystemDBTest]
+GO
+
+delete from stage.FactMeasurement
+delete from stage.DimUser
+delete from stage.DimGreenhouse
+
+delete from edw.FactMeasurement
+delete from edw.DimDate
+delete from edw.DimTime
+delete from edw.DimGreenhouse
+delete from edw.DimUser
