@@ -58,7 +58,6 @@ if (FirebaseApp.DefaultInstance == null) {
 }
 
 //adding all services
-var connectionString = builder.Configuration.GetConnectionString("GreenhouseDB");
 
 builder.Services.AddDbContext<GreenhouseSystemContext>();
 builder.Services.AddScoped<IMeasurementService, MeasurementDao>();

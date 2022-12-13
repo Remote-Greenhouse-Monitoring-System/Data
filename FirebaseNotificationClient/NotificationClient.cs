@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 
 namespace FirebaseNotificationClient;
@@ -19,7 +20,7 @@ public class NotificationClient : INotificationClient
 
             Token = token,
         };
-        var messaging = FirebaseMessaging.DefaultInstance;
+        var messaging = FirebaseMessaging.GetMessaging(FirebaseApp.DefaultInstance);
         var result = await messaging.SendAsync(message);
         Console.WriteLine(result);
     }

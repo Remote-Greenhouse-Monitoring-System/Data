@@ -22,8 +22,9 @@ public class NotificationController : ControllerBase
     public async Task<ActionResult> RegisterForNotifications([FromRoute] string token, [FromRoute] long uId)
     {
         try
-        {
-            await _notificationClient.SendNotificationToUser(token,"Hello","android team!");
+        {   
+            //uncomment line below to test notifications directly
+            // await _notificationClient.SendNotificationToUser(token,"Hello","android team!");
             await _userService.SetTokenForUser(uId,token);
             return Ok();
         }
