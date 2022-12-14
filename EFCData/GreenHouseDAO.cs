@@ -11,11 +11,7 @@ namespace EFCData;
 public class GreenHouseDao : IGreenHouseService{
     
     private readonly GreenhouseSystemContext _greenhouseSystemContext;
-    private readonly Dictionary<string, long> _euiIdMap = new ()
-    {
-        {"0004A30B00E8355E", 1},
-        {"0004A30B00251001", 2}
-    };
+ 
 
     public GreenHouseDao(GreenhouseSystemContext greenhouseSystemContext)
     {
