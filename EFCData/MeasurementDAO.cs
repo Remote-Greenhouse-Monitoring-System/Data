@@ -17,7 +17,7 @@ public class MeasurementDao : IMeasurementService
     {
         ICollection<Measurement> measurements = await _greenhouseSystemContext.Measurements!.Take(amount)
             .Where(m => m.GreenhouseId == gId)
-            .OrderBy(m=>m.Timestamp)
+            .OrderByDescending(m=>m.Timestamp)
             .ToListAsync();
         return measurements ;
     }
@@ -27,7 +27,7 @@ public class MeasurementDao : IMeasurementService
         Measurement measurement = await _greenhouseSystemContext.
             Measurements!
             .Where(m=>m.GreenhouseId==gId)
-            .OrderBy(m => m.Timestamp)
+            .OrderByDescending(m => m.Timestamp)
             .FirstAsync();
         return measurement;
     }

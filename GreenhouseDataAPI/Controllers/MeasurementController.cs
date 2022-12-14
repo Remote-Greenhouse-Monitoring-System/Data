@@ -111,7 +111,7 @@ public class MeasurementController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-
+    //testing the DAO functionality of adding to every greenhouse with a specific EUI
     [HttpPost]
     [Route("addWithEUITest")]
     public async Task<ActionResult> AddMeasurementWithEUI([FromBody] Measurement measurement,[FromQuery] string EUI)
