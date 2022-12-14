@@ -111,5 +111,20 @@ public class MeasurementController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
+    [HttpPost]
+    [Route("addWithEUITest")]
+    public async Task<ActionResult> AddMeasurementWithEUI([FromBody] Measurement measurement,[FromQuery] string EUI)
+    {
+        try
+        {
+            await _measurementService.AddMeasurementWithEUI(measurement, EUI);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    } 
 }
 

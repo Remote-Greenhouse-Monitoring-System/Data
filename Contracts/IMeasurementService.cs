@@ -11,4 +11,5 @@ public interface IMeasurementService
     public Task<ICollection<Measurement>> GetAllPerMonth(long gId, int month, int year);
     public Task<ICollection<Measurement>> GetAllPerYear(long gId, int year);
     public Task AddMeasurement(Measurement measurement, long gId);
+    public Task AddMeasurementWithEUI(Measurement measurement, string EUI);
 }

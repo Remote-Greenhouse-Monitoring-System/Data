@@ -14,4 +14,6 @@ public interface IGreenHouseService {
     
     //simulate getting GID from DB ->uses hardcoded Dictionary instead
     long GetGreenhouseIdByEui(string eui);
+    
+    
 }
