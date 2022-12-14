@@ -89,8 +89,8 @@ public class BackgroundListener : BackgroundService
             
             //extract measurements and send to DB
             var newMeasurement = GetMeasurementFromReceivedData(greenhouseId, upLinkDto.Data);
-            await measurementService.AddMeasurementWithEUI(newMeasurement,upLinkDto.Eui);
-
+            await measurementService.AddMeasurement(newMeasurement,greenhouseId);
+            
             //extract status and send notification if changed
             var newStatusBits = GetStatusFromReceivedData(upLinkDto.Data);
             if (!lastStatusBits.Equals(newStatusBits))
