@@ -1,0 +1,121 @@
+
+
+/** INCREMENTAL LOAD For EDW.DimUser**/
+USE GreenhouseSystemDW
+GO
+/** Declare variables**/
+
+--Last updated variables
+
+DECLARE @LastLocalDate int
+SET @LastLocalDate = (SELECT MAX(LastLoadDate) FROM [etl].[LogUpdate] WHERE [Table] = 'DimUser')
+DECLARE @NewLoadDate int 
+SET @NewLoadDate= CONVERT(CHAR(8), GETDATE(),112)
+DECLARE @FutureDate int
+SET @FutureDate = 99990101
+
+print @LastLocalDate
+print @NewLoadDate
+
+/** start get added**/
+
+INSERT INTO [edw].[DimUser]
+           ([User_id]
+           ,[Username]
+           ,[Email]
+           ,[ValidFrom]
+           ,[ValidTo])
+	SELECT 
+            [User_id]
+           ,[Username]
+           ,[Email]
+           ,@NewLoadDate
+		   ,@FutureDate
+		   FROM [stage].[DimUser]
+		   WHERE [User_id] in (SELECT [User_id]                                     
+									 FROM [stage].[DimUser]
+                                  EXCEPT 
+								 SELECT [User_id]                                     
+                                      FROM [edw].[DimUser]
+								 WHERE ValidTo = 99990101  
+							     )
+
+/***************** Update Changes************************/
+
+DROP TABLE IF EXISTS temp
+/** Find all the changed rows in stage and exclude new added rows**/
+
+SELECT  [User_id]
+       ,[Username]
+       ,[Email]
+	   INTO temp
+FROM [stage].[DimUser]
+
+EXCEPT
+
+SELECT  [User_id]
+       ,[Username]
+       ,[Email]
+FROM [edw].[DimUser]
+WHERE ValidTo = 99990101
+
+EXCEPT
+
+SELECT      [User_id]
+           ,[Username]
+           ,[Email]           
+		   FROM [stage].[DimUser]
+		   WHERE [User_id] in (SELECT [User_id]                                     
+									 FROM [stage].[DimUser]
+                                  EXCEPT 
+								 SELECT [User_id]                                     
+                                      FROM [edw].[DimUser]
+								 WHERE ValidTo = 99990101  
+							     )
+
+/* Insert the new change in EDW*/
+
+INSERT INTO [edw].[DimUser]
+           ([User_id]
+           ,[Username]
+           ,[Email]
+           ,[ValidFrom]
+           ,[ValidTo])
+	SELECT 
+            [User_id]
+           ,[Username]
+           ,[Email]
+           ,@NewLoadDate
+		   ,@FutureDate
+		   FROM temp
+
+-- update all the rows in edw.DimUser that contain the User_id in temp by putting the validto to the day before the upload
+UPDATE [edw].[DimUser]
+SET ValidTo=@NewLoadDate-1
+WHERE [User_id] in (SELECT [User_id]
+                      FROM temp ) AND [edw].[DimUser].ValidFrom<@NewLoadDate
+
+DROP TABLE IF EXISTS temp
+
+-- update edw.Dimcustomer if the Customers are deleted
+
+UPDATE [edw].[DimUser]
+SET ValidTo=@NewLoadDate-1
+WHERE [User_id] in ( 
+SELECT [User_id] FROM [edw].[DimUser] WHERE [User_id] in (
+                                                            SELECT [User_id] FROM [edw].[DimUser]
+															EXCEPT
+															SELECT [User_id] FROM [stage].[DimUser]
+                                                            ) AND ValidTo = 99990101
+                    )
+
+
+--- Update etl.LogUpdate for DimUser with the new load date
+
+INSERT INTO [GreenhouseSystemDW].[etl].[LogUpdate]
+           ([Table]
+      ,[LastLoadDate])
+     VALUES
+           ('DimUser'
+           ,@NewLoadDate)
+GO

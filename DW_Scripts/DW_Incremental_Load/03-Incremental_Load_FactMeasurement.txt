@@ -1,0 +1,93 @@
+/****** Script for Fact INCREMENTAL LOAD  ******/
+
+
+USE [GreenhouseSystemDW]
+GO
+
+
+DECLARE @LastLoadDate datetime
+SET @LastLoadDate=  (SELECT  MAX(LastLoadDate) FROM etl.LogFact WHERE [Table] ='FactMeasurement')
+
+					
+-- Delete all the records from stage table before load the new rows after the last date of update factsale
+TRUNCATE TABLE [stage].[FactMeasurement]
+
+-- Insert the new rows after the last date of load in fact Measurement
+
+INSERT INTO [stage].[FactMeasurement]
+           ([Measurement_id]
+           ,[Greenhouse_id]
+           ,[User_id]
+           ,[Temperature]
+           ,[Humidity]
+           ,[Co2]
+           ,[Light]
+           ,[Timestamp])
+     SELECT m.Id
+	        ,m.GreenhouseId
+		    ,u.User_id
+		    ,[Temperature]
+            ,[Humidity]
+            ,[Co2]
+            ,[Light]
+            ,[Timestamp]
+	 FROM       [dbo].[Measurements]  m
+	 INNER JOIN [dbo].[GreenHouses] gh
+	 ON m.GreenhouseId=gh.Id
+	 INNER JOIN [GreenhouseSystemDW].[stage].[DimUser] u
+	 ON gh.UserId=u.User_id
+	 WHERE m.Timestamp> @LastLoadDate
+
+-- insert the new rows from stage.factMeasurement to the edw.factMeasurement
+
+	 INSERT INTO [edw].[FactMeasurement]
+           ([M_ID]
+           ,[U_ID]
+           ,[G_ID]
+           ,[D_ID]
+           ,[T_ID]
+           ,[Temperature]
+           ,[Humidity]
+           ,[Co2]
+           ,[Light])
+    SELECT  f.Measurement_id
+           ,edwu.[U_ID]
+           ,edwg.[G_ID]
+           ,edwd.[D_ID]
+           ,edwt.[T_ID]
+           ,f.[Temperature]
+           ,f.[Humidity]
+           ,f.[Co2]
+           ,f.[Light]	
+	FROM [GreenhouseSystemDW].[stage].[FactMeasurement] f
+	INNER JOIN [GreenhouseSystemDW].[edw].[DimUser] edwu
+	on f.User_id=edwu.User_id
+	INNER JOIN  [GreenhouseSystemDW].[edw].[DimGreenhouse] edwg
+	on f.Greenhouse_id=edwg.Greenhouse_id
+	INNER JOIN [GreenhouseSystemDW].[edw].[DimDate] edwd
+   on CONVERT(DATE,f.timestamp)=edwd.Date
+   INNER JOIN [GreenhouseSystemDW].[edw].[DimTime] edwt
+   on DATEPART(HOUR, f.timestamp)=edwt.Hour AND DATEPART(MINUTE, f.timestamp)=edwt.Minute
+   WHERE   edwu.ValidTo=99990101
+	   and edwg.ValidTo=99990101
+
+-- Update the etl.logUpdate for fact Measurement with the current day and time
+
+
+DECLARE @NewLoadDate datetime
+--SET @NewLoadDate=  dateadd(HOUR, 1, getdate()) 
+SET @NewLoadDate=  getdate()
+--DECLARE @NewLoadTime int
+--SET
+print @NewLoadDate
+--- Update etl.LogFact for fact Measurementwith the new load date
+
+INSERT INTO [etl].[LogFact]
+           ([Table]
+      ,[LastLoadDate])
+     VALUES
+           ('FactMeasurement'
+           ,@NewLoadDate)
+
+
+
