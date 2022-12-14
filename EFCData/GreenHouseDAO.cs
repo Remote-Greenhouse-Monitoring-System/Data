@@ -145,7 +145,7 @@ public class GreenHouseDao : IGreenHouseService{
             greenhouse.Measurements = g.Measurements;
             if (greenhouse.Measurements == null || greenhouse.Measurements!.Count == 0)
             {
-                greenhousesWithLastMeasurements.Add(new GreenhouseLastMeasurement(greenhouse.Id,greenhouse.Name, new Measurement()));
+                greenhousesWithLastMeasurements.Add(new GreenhouseLastMeasurement(greenhouse.Id,greenhouse.Name, new Measurement(), greenhouse.DeviceEui));
             }
             else
             {
@@ -154,7 +154,7 @@ public class GreenHouseDao : IGreenHouseService{
                         greenhouse.Name,
                         greenhouse.Measurements!
                             .OrderBy(m=>m.Timestamp)
-                            .First()));
+                            .First(), greenhouse.DeviceEui));
             }
         }
         

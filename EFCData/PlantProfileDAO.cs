@@ -17,12 +17,24 @@ public class PlantProfileDao : IPlantProfileService
     
     public async Task<PlantProfile> AddPlantProfile(PlantProfile plantP, long userId)
     {
-        await _greenhouseSystemContext.Thresholds!.AddAsync(plantP.Threshold);
-        await _greenhouseSystemContext.PlantProfiles!.AddAsync(plantP);
-        User u  ;
         try
         {
-            u=await _greenhouseSystemContext.Users!.Include(u=>u.PlantProfiles).FirstAsync(u => u.Id == userId);
+            await _greenhouseSystemContext.Thresholds!.AddAsync(plantP.Threshold);
+            await _greenhouseSystemContext.PlantProfiles!.AddAsync(plantP);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Something wrong happened when adding to the database.");        
+        }
+        
+        User user ;
+        
+        try
+        {
+            user=await _greenhouseSystemContext.Users!
+                .Include(u=>u.PlantProfiles)
+                .FirstAsync(u => u.Id == userId);
         }
         catch (Exception e)
         {
@@ -30,11 +42,20 @@ public class PlantProfileDao : IPlantProfileService
             throw new Exception("User not found.");
         }
         await _greenhouseSystemContext.SaveChangesAsync();
+
+        try
+        {
+            user.PlantProfiles!.Add(plantP);
+            _greenhouseSystemContext.Users!.Update(user);
         
-        u.PlantProfiles!.Add(plantP);
-        _greenhouseSystemContext.Users!.Update(u);
+            await _greenhouseSystemContext.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Something wrong happened when adding to the database.");
+        }
         
-        await _greenhouseSystemContext.SaveChangesAsync();
         return plantP;
     }
     
@@ -71,14 +92,15 @@ public class PlantProfileDao : IPlantProfileService
         await _greenhouseSystemContext.SaveChangesAsync();
         return plantP;
     }
-
-    // User not implemented yet
+    
     public async Task<ICollection<PlantProfile>> GetUserPlantProfiles(long uId)
     {
         User u;
         try
         {
-            u=await _greenhouseSystemContext.Users!.Include(u=>u.PlantProfiles).FirstAsync(u => u.Id == uId);
+            u=await _greenhouseSystemContext.Users!
+                .Include(u=>u.PlantProfiles)
+                .FirstAsync(u => u.Id == uId);
         }
         catch (Exception e)
         {
@@ -90,19 +112,14 @@ public class PlantProfileDao : IPlantProfileService
 
     public async Task<ICollection<PlantProfile>> GetPreMadePlantProfiles()
     {
-        List<string> premadeNames=new List<string>() {"Basil","Tomatoes","Sunflower","Rosemary","Cannabis Ruderalis","Blackberries"};
+        
         ICollection<PlantProfile> premadeProfiles = new List<PlantProfile>();
         try
         {
-            ICollection<PlantProfile> allProfiles= await _greenhouseSystemContext.PlantProfiles!
+             premadeProfiles= await _greenhouseSystemContext.PlantProfiles!
                 .Include(p=>p.Threshold)
-                .Where(p=>p.Id>=78)
+                .Where(p=>p.IsPreMade==true)
                 .ToListAsync();
-            foreach (var p in allProfiles)
-            {
-                if(premadeNames.Contains(p.Name))
-                    premadeProfiles.Add(p);
-            }
         }
         catch (Exception e)
         {

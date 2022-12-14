@@ -1,0 +1,117 @@
+USE [GreenhouseSystemDBTest]
+GO
+
+INSERT INTO [dbo].[GreenHouses]
+           ([Id]
+           ,[Name]
+           ,[ActivePlantProfileId]
+           ,[UserId])
+     SELECT 
+	        [Id]
+           ,[Name]
+           ,[ActivePlantProfileId]
+           ,[UserId]
+		   FROM dbo.GreenHouses_Ext
+           
+GO
+/*******************************************************/
+
+USE [GreenhouseSystemDBTest]
+GO
+
+INSERT INTO [dbo].[Measurements]
+           ([Id]
+           ,[GreenhouseId]
+           ,[Temperature]
+           ,[Humidity]
+           ,[Co2]
+           ,[Light]
+           ,[Timestamp]
+           ,[PlantProfileId])
+     SELECT
+           [Id]
+           ,[GreenhouseId]
+           ,[Temperature]
+           ,[Humidity]
+           ,[Co2]
+           ,[Light]
+           ,[Timestamp]
+           ,[PlantProfileId]
+		   FROM dbo.Measurements_Ext
+GO
+
+
+/***********************************/
+
+USE [GreenhouseSystemDBTest]
+GO
+
+INSERT INTO [dbo].[PlantProfiles]
+           ([Id]
+           ,[Name]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[ThresholdId]
+           ,[UserId])
+     SELECT
+           [Id]
+           ,[Name]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[ThresholdId]
+           ,[UserId]
+		   FROM dbo.PlantProfiles_Ext
+GO
+
+
+/************************************/
+
+USE [GreenhouseSystemDBTest]
+GO
+
+INSERT INTO [dbo].[Thresholds]
+           ([Id]
+           ,[HumidityMin]
+           ,[HumidityMax]
+           ,[Co2Min]
+           ,[Co2Max]
+           ,[TemperatureMin]
+           ,[TemperatureMax])
+     SELECT
+	       [Id]
+           ,[HumidityMin]
+           ,[HumidityMax]
+           ,[Co2Min]
+           ,[Co2Max]
+           ,[TemperatureMin]
+           ,[TemperatureMax]
+		   FROM [dbo].[Thresholds_Ext]
+           
+GO
+
+
+/**************************/
+
+USE [GreenhouseSystemDBTest]
+GO
+
+INSERT INTO [dbo].[Users]
+           ([Id]
+           ,[Username]
+           ,[Password]
+           ,[Email])
+    SELECT
+          [Id]
+           ,[Username]
+           ,[Password]
+           ,[Email]
+		   FROM [dbo].[Users_Ext] 
+GO
+
+

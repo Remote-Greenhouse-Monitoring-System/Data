@@ -41,7 +41,6 @@ public class GreenhouseSystemContext : DbContext
         modelBuilder.Entity<User>().HasKey(u => u.Id);
         
         modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
-        modelBuilder.Entity<User>().HasIndex(u => u.Token).IsUnique();
         
         modelBuilder.Entity<Threshold>().HasKey(t => t.Id);
     }

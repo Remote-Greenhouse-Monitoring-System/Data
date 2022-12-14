@@ -10,6 +10,7 @@ public class GreenHouse {
     public string Name { get; set; }
     [JsonIgnore]
     public long UserId { get; set; }
+    
     public string? DeviceEui { get; set; }
     
     [JsonIgnore] 

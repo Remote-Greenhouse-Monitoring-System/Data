@@ -1,0 +1,186 @@
+CREATE DATABASE [GreenhouseSystemDW]
+GO
+
+/**********************************************/
+
+USE [GreenhouseSystemDW]
+GO
+
+/****** Object:  Schema [stage]    Script Date: 05/12/2022 10.49.03 ******/
+CREATE SCHEMA [stage]
+GO
+CREATE SCHEMA [edw]
+GO
+CREATE SCHEMA [etl]
+GO
+
+/*************************************************************/
+
+/*********************** Create Dimensions and fact table in the STAGE ************************************/
+
+
+USE GreenhouseSystemDW
+GO
+
+
+CREATE TABLE stage.DimGreenhouse (
+ Greenhouse_id BIGINT NOT NULL,
+ GreenhouseName [nvarchar](max),
+ PlantProfileName [nvarchar](max),
+ Description [nvarchar](max),
+ OptimalTemperature [real],
+ OptimalHumidity [real],
+ OptimalCo2 [real],
+ OptimalLight INT,
+ TemperatureMax [real],
+ TemperatureMin [real],
+ HumidityMax [real],
+ HumidityMin [real],
+ Co2Max [real],
+ Co2Min [real]
+);
+
+ALTER TABLE stage.DimGreenhouse ADD CONSTRAINT PK_DimGreenhouse PRIMARY KEY (Greenhouse_id);
+
+
+CREATE TABLE stage.DimUser (
+ User_id BIGINT NOT NULL,
+ Username [nvarchar](max),
+ Email [nvarchar](450)
+);
+
+ALTER TABLE stage.DimUser ADD CONSTRAINT PK_DimUser PRIMARY KEY (User_id);
+
+
+CREATE TABLE stage.FactMeasurement (
+ Measurement_id BIGINT NOT NULL,
+ Greenhouse_id BIGINT NOT NULL,
+ User_id BIGINT NOT NULL,
+ Temperature [real],
+ Humidity [real],
+ Co2 [real],
+ Light INT,
+ Timestamp DATETIME
+);
+
+ALTER TABLE stage.FactMeasurement ADD CONSTRAINT PK_FactMeasurement PRIMARY KEY (Measurement_id,Greenhouse_id,User_id);
+
+
+ALTER TABLE stage.FactMeasurement ADD CONSTRAINT FK_FactMeasurement_0 FOREIGN KEY (Greenhouse_id) REFERENCES stage.DimGreenhouse (Greenhouse_id);
+ALTER TABLE stage.FactMeasurement ADD CONSTRAINT FK_FactMeasurement_1 FOREIGN KEY (User_id) REFERENCES stage.DimUser (User_id);
+
+/*********************** Create Dimensions and fact table in the EDW ************************************/
+
+
+USE GreenhouseSystemDW
+GO
+
+CREATE TABLE edw.DimDate (
+ D_ID INT NOT NULL,
+ Date DATE,
+ Day INT,
+ Month INT,
+ Year INT,
+ MonthName NCHAR VARYING(9),
+ Week INT,
+ DayOfWeek INT,
+ WeekDayName NCHAR VARYING(9),
+ Season NCHAR VARYING(9)
+);
+
+ALTER TABLE edw.DimDate ADD CONSTRAINT PK_DimDate PRIMARY KEY (D_ID);
+
+
+CREATE TABLE edw.DimGreenhouse (
+ G_ID BIGINT IDENTITY NOT NULL,
+ Greenhouse_id BIGINT,
+ GreenhouseName [nvarchar](max),
+ PlantProfileName [nvarchar](max),
+ Description [nvarchar](max),
+ OptimalTemperature [real],
+ OptimalHumidity [real],
+ OptimalCo2 [real],
+ OptimalLight INT,
+  TemperatureMax [real],
+ TemperatureMin [real],
+ HumidityMax [real],
+ HumidityMin [real],
+ Co2Max [real],
+ Co2Min [real],
+ ValidFrom INT,
+ ValidTo INT
+);
+
+ALTER TABLE edw.DimGreenhouse ADD CONSTRAINT PK_DimGreenhouse PRIMARY KEY (G_ID);
+
+
+CREATE TABLE edw.DimTime (
+ T_ID INT IDENTITY NOT NULL,
+ Time TIME,
+ Hour SMALLINT,
+ Minute SMALLINT
+);
+
+ALTER TABLE edw.DimTime ADD CONSTRAINT PK_DimTime PRIMARY KEY (T_ID);
+
+
+CREATE TABLE edw.DimUser (
+ U_ID BIGINT IDENTITY NOT NULL,
+ User_id BIGINT,
+ Username [nvarchar](max),
+ Email [nvarchar](450),
+ ValidFrom INT,
+ ValidTo INT
+);
+
+ALTER TABLE edw.DimUser ADD CONSTRAINT PK_DimUser PRIMARY KEY (U_ID);
+
+
+CREATE TABLE edw.FactMeasurement (
+ M_ID BIGINT NOT NULL,
+ U_ID BIGINT NOT NULL,
+ G_ID BIGINT NOT NULL,
+ D_ID INT NOT NULL,
+ T_ID INT NOT NULL,
+ Temperature [real],
+ Humidity [real],
+ Co2 [real],
+ Light INT
+);
+
+ALTER TABLE edw.FactMeasurement ADD CONSTRAINT PK_FactMeasurement PRIMARY KEY (M_ID,U_ID,G_ID,D_ID,T_ID);
+
+
+ALTER TABLE edw.FactMeasurement ADD CONSTRAINT FK_FactMeasurement_0 FOREIGN KEY (U_ID) REFERENCES edw.DimUser (U_ID);
+ALTER TABLE edw.FactMeasurement ADD CONSTRAINT FK_FactMeasurement_1 FOREIGN KEY (G_ID) REFERENCES edw.DimGreenhouse (G_ID);
+ALTER TABLE edw.FactMeasurement ADD CONSTRAINT FK_FactMeasurement_2 FOREIGN KEY (D_ID) REFERENCES edw.DimDate (D_ID);
+ALTER TABLE edw.FactMeasurement ADD CONSTRAINT FK_FactMeasurement_3 FOREIGN KEY (T_ID) REFERENCES edw.DimTime (T_ID);
+
+
+/******* CREATE ETL LOG TABLE*****************************/
+
+Use GreenhouseSystemDW
+GO
+
+-- Create a log update table to keep track of all the recent loads for any dimension
+CREATE TABLE [GreenhouseSystemDW].[etl].[LogUpdate](
+     [Table] [nvarchar] (50) NULL ,
+     [LastLoadDate] INT NULL 
+     ----,[LastLoadTime] int NULL
+
+) ON [PRIMARY]
+
+GO
+
+Use GreenhouseSystemDW
+GO
+
+-- Create a log update table to keep track of all the recent loads for any dimension
+CREATE TABLE [GreenhouseSystemDW].[etl].[LogFact](
+     [Table] [nvarchar] (50) NULL ,
+     [LastLoadDate] DATETIME NULL 
+     ----,[LastLoadTime] int NULL
+
+) ON [PRIMARY]
+
+GO

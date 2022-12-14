@@ -1,0 +1,107 @@
+USE [GreenhouseSystemDW]
+GO
+
+INSERT INTO [GreenhouseSystemDW].[stage].[DimUser]
+           ([User_id]
+           ,[username]
+           ,[email])
+    SELECT
+	        [id]
+           ,[username]
+           ,[email]
+     FROM [dbo].[Users]
+
+GO
+
+/********** Populate Dim Greenhouse****************/
+
+INSERT INTO [stage].[DimGreenhouse]
+           ([Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min])
+     SELECT  gh.Id
+	        ,gh.Name
+			,pp.Name
+			,Description
+			,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]
+    FROM      [dbo].[GreenHouses] gh
+	LEFT JOIN [dbo].[PlantProfiles] pp
+	on gh.ActivePlantProfileId=pp.Id
+	LEFT JOIN [dbo].[Thresholds] th
+	on pp.ThresholdId=th.Id
+
+GO
+
+/*************************Clean the Stage*******************/
+
+USE [GreenhouseSystemDW]
+GO
+
+UPDATE [stage].[DimGreenhouse]
+   SET
+      [PlantProfileName] = 'N/Profile'
+      ,[Description] = 'N/Description'
+      ,[OptimalTemperature] = 0
+      ,[OptimalHumidity] = 0
+      ,[OptimalCo2] = 0
+      ,[OptimalLight] = 0
+      ,[TemperatureMax] = 100
+      ,[TemperatureMin] = -100
+      ,[HumidityMax] = 1000
+      ,[HumidityMin] = -1000
+      ,[Co2Max] = 10000
+      ,[Co2Min] = -10000
+ WHERE [PlantProfileName] is null
+GO
+
+/**************Populate FACT Measurement***********/
+
+
+USE [GreenhouseSystemDW]
+GO
+
+INSERT INTO [stage].[FactMeasurement]
+           ([Measurement_id]
+           ,[Greenhouse_id]
+           ,[User_id]
+           ,[Temperature]
+           ,[Humidity]
+           ,[Co2]
+           ,[Light]
+           ,[Timestamp])
+     SELECT m.Id
+	        ,m.GreenhouseId
+			,u.User_id
+			,[Temperature]
+            ,[Humidity]
+            ,[Co2]
+            ,[Light]
+            ,[Timestamp]
+	 FROM       [dbo].[Measurements]  m
+	 INNER JOIN [dbo].[GreenHouses] gh
+	 ON m.GreenhouseId=gh.Id
+	 INNER JOIN [GreenhouseSystemDW].[stage].[DimUser] u
+	 ON gh.UserId=u.User_id
+
+GO
+
