@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace EFCData; 
 
 
-//TODO I do not think the dao should implement the greenHouse (?)
+
 
 public class GreenHouseDao : IGreenHouseService{
     

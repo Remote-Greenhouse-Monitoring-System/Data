@@ -77,7 +77,7 @@ public class BackgroundListener : BackgroundService
                 if (user.Token != null)
                 {
                     await notificationClient.SendNotificationToUser(user.Token!,
-                        "Following action(s) have been triggered in your greenhouse-"+greenhouseId, whatActionsHappened.ToString()!);
+                        "Following action(s) have been triggered in your greenhouse-"+greenhouseId, ListOfChangedActionsToString(whatActionsHappened));
                 }
             }
             lastStatusBits = newStatusBits;
@@ -170,7 +170,18 @@ public class BackgroundListener : BackgroundService
         }
         return changedActions;
     }
-    
+
+    private static string ListOfChangedActionsToString(List<string> list)
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append("Here is a list of actions that happened in your greenhouse: \n");
+        foreach (var item in list)
+        {
+            builder.Append("[ "+list.IndexOf(item)+" ] "+item+" \n");
+        }
+
+        return builder.ToString();
+    }
     public static string GetHexStringFromThreshold(Threshold? thresholds)
     {
         //if threshold equals new/=empty threshold ->return zeros
