@@ -13,7 +13,7 @@ namespace Tests.IntegrationTest;
 public class PlantProfileTest : IntegrationTest{
     private readonly string PATH = "PlantProfiles";
     private readonly int USER_ID = 1;
-    private readonly int INVALID_USER_ID = 845;
+    private readonly int INVALID_USER_ID = 8435;
     private readonly int GH_ID = 3;
     
     
@@ -114,7 +114,7 @@ public class PlantProfileTest : IntegrationTest{
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.GetAsync($"{PATH}/activated/{GH_ID}");
+        var response = await TestClient.GetAsync($"{PATH}/activated/{INVALID_USER_ID}");
         
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

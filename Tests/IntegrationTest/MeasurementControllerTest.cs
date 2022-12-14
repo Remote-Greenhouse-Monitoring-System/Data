@@ -11,7 +11,7 @@ namespace Tests.IntegrationTest;
 public class MeasurementControllerTest : IntegrationTest
 {
     private readonly string PATH = "/Measurement";
-    private readonly int GH_ID = 3;
+    private readonly int GH_ID = 1;
     private readonly int INVALID_GH_ID = 845;
     private readonly int AMOUNT = 4;
     private readonly int HOURS = 10;
