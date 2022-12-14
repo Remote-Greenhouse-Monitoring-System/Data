@@ -35,9 +35,18 @@ public class GreenHouseDao : IGreenHouseService{
             throw new Exception("User could not be found.");
         }
 
-        user.GreenHouses!.Add(greenHouse);
-         _greenhouseSystemContext.Users!.Update(user);
-         await _greenhouseSystemContext.SaveChangesAsync();
+        try
+        {
+            user.GreenHouses!.Add(greenHouse);
+            _greenhouseSystemContext.Users!.Update(user);
+            await _greenhouseSystemContext.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("The greenhouse could not be added." +
+                                " It may be because a greenhouse with the same Device EUI already exists.");
+        }
          return greenHouse;
     }
 
