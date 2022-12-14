@@ -94,7 +94,17 @@ public class UserDao : IUserService
             Console.WriteLine(sqlException);
             throw new("Something went wrong when adding the user. Please try again. ");
         }
-        await _systemContext.SaveChangesAsync();
+
+
+        try
+        {
+            await _systemContext.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("User with the same email already registered.");
+        }
         return await _systemContext.Users!.FirstAsync(u => u.Email == user.Email);
     }
 
@@ -169,6 +179,24 @@ public class UserDao : IUserService
         }
 
         user.Token = token;
+        _systemContext.Users!.Update(user);
+        await _systemContext.SaveChangesAsync();
+    }
+
+    public async Task RemoveTokenFromUser(long uId)
+    {
+        User user;
+        try
+        {
+            user = await _systemContext.Users!.FirstAsync(u => u.Id == uId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("User not found.");
+        }
+
+        user.Token = null;
         _systemContext.Users!.Update(user);
         await _systemContext.SaveChangesAsync();
     }

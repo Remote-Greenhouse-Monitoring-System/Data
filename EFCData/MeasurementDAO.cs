@@ -17,7 +17,7 @@ public class MeasurementDao : IMeasurementService
     {
         ICollection<Measurement> measurements = await _greenhouseSystemContext.Measurements!.Take(amount)
             .Where(m => m.GreenhouseId == gId)
-            .OrderBy(m=>m.Timestamp)
+            .OrderByDescending(m=>m.Timestamp)
             .ToListAsync();
         return measurements ;
     }
@@ -27,7 +27,7 @@ public class MeasurementDao : IMeasurementService
         Measurement measurement = await _greenhouseSystemContext.
             Measurements!
             .Where(m=>m.GreenhouseId==gId)
-            .OrderBy(m => m.Timestamp)
+            .OrderByDescending(m => m.Timestamp)
             .FirstAsync();
         return measurement;
     }
@@ -75,7 +75,7 @@ public class MeasurementDao : IMeasurementService
     }
 
     
-    //upload:
+    //upload:0004A30B00E8355E
     public async Task AddMeasurement(Measurement measurement, long gId)
     {
         GreenHouse greenHouse;
@@ -113,6 +113,41 @@ public class MeasurementDao : IMeasurementService
 
         await _greenhouseSystemContext.Measurements!.AddAsync(measurement);
         await _greenhouseSystemContext.SaveChangesAsync();
+        await Console.Out.WriteLineAsync("MeasurementDAO: " + measurement +" added to DB");
+    }
+    //used to add measurement to all greenhouses with the EUI, just for testing purposes
+    public async Task AddMeasurementWithEUI(Measurement measurement, string eui)
+    {
+        ICollection<GreenHouse> greenHouses;
+        try
+        {
+            greenHouses=await _greenhouseSystemContext.GreenHouses!
+                .Include(g=>g.ActivePlantProfile)
+                .Include(g=>g.Measurements)
+                .Where(g=>g.DeviceEui==eui)
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Greenhouses not found.");
+        }
+
+        try
+        {
+            foreach (var greenHouse in greenHouses)
+            {
+                Measurement m = new Measurement(greenHouse.Id,measurement.Temperature,measurement.Humidity,measurement.Co2, measurement.Light);
+                greenHouse.Measurements!.Add(m);
+                await _greenhouseSystemContext.Measurements!.AddAsync(m);
+                _greenhouseSystemContext.GreenHouses!.Update(greenHouse);
+                await _greenhouseSystemContext.SaveChangesAsync();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Something went wrong when updating the database.");
+        }
         await Console.Out.WriteLineAsync("MeasurementDAO: " + measurement +" added to DB");
     }
 }

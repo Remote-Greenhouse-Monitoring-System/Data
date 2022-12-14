@@ -1,0 +1,11 @@
+/***** Test For dimensions Table***********/
+USE [GreenhouseSystemDBTest]
+GO
+/***** Test For Dimensions tables**********/
+SELECT COUNT(id) as 'Number of grenhouses in DB source Test'  FROM GreenhouseSystemDBTest.dbo.GreenHouses
+SELECT COUNT(Greenhouse_id) as 'Number of greenhouses in  greenhouse dimension' FROM edw.DimGreenhouse
+
+SELECT count(id) as 'Number of users in DB source Test'  FROM GreenhouseSystemDBTest.dbo.Users
+SELECT count(User_id) as 'Number of users in user dimension' FROM edw.DimUser
+
+

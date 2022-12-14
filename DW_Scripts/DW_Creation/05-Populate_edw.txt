@@ -1,0 +1,92 @@
+
+USE [GreenhouseSystemDW]
+GO
+
+INSERT INTO [edw].[DimGreenhouse]
+           ([Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min] )
+     SELECT 
+	        [Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]
+     FROM  [stage].[DimGreenhouse]
+
+GO
+
+/***************************************************************************/
+
+USE [GreenhouseSystemDW]
+GO
+
+INSERT INTO [edw].[DimUser]
+           ([User_id]
+           ,[Username]
+           ,[Email]
+           )
+     SELECT
+	        [User_id]
+           ,[Username]
+           ,[Email]
+     FROM  [stage].[DimUser]
+
+GO
+/********************************* EDW FACT TABLE***************************/
+
+USE [GreenhouseSystemDW]
+GO
+
+INSERT INTO [edw].[FactMeasurement]
+           ([M_ID]
+           ,[U_ID]
+           ,[G_ID]
+           ,[D_ID]
+           ,[T_ID]
+           ,[Temperature]
+           ,[Humidity]
+           ,[Co2]
+           ,[Light])
+    SELECT  f.Measurement_id
+           ,edwu.[U_ID]
+           ,edwg.[G_ID]
+           ,edwd.[D_ID]
+           ,edwt.[T_ID]
+           ,f.[Temperature]
+           ,f.[Humidity]
+           ,f.[Co2]
+           ,f.[Light]	
+	FROM [GreenhouseSystemDW].[stage].[FactMeasurement] f
+	INNER JOIN [GreenhouseSystemDW].[edw].[DimUser] edwu
+	on f.User_id=edwu.User_id
+	INNER JOIN  [GreenhouseSystemDW].[edw].[DimGreenhouse] edwg
+	on f.Greenhouse_id=edwg.Greenhouse_id
+	INNER JOIN [GreenhouseSystemDW].[edw].[DimDate] edwd
+   on CONVERT(DATE,f.timestamp)=edwd.Date
+   INNER JOIN [GreenhouseSystemDW].[edw].[DimTime] edwt
+   on DATEPART(HOUR, f.timestamp)=edwt.Hour AND DATEPART(MINUTE, f.timestamp)=edwt.Minute 
+GO
+
+
+

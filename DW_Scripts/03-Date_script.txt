@@ -1,0 +1,44 @@
+USE [GreenhouseSystemDW] 
+GO
+
+DECLARE @StartDate DATE;
+DECLARE @EndDate DATE;
+
+SET @StartDate= '2021-01-01';
+SET @EndDate= DATEADD(Year,10,GETDATE());
+
+WHILE @StartDate <= @EndDate
+  BEGIN
+   
+   INSERT INTO [GreenhouseSystemDW].[edw].[DimDate]
+           ([D_ID]
+           ,[Date]
+           ,[Day]
+           ,[Month]
+           ,[MonthName]
+           ,[Week]       
+           ,[Year]
+           ,[DayOfWeek] 
+           ,[WeekDayName]		    
+			,[Season])
+    SELECT
+	       CONVERT(CHAR(8), @StartDate, 112) AS D_ID
+		   ,@StartDate as [Date]
+		   ,DATEPART(day,@StartDate) as Day
+		   ,DATEPART(month,@StartDate) as Month
+		   ,DATENAME(month,@StartDate) as MonthName
+		   ,DATEPART(week,@StartDate) as Week
+		   
+		   ,DATEPART(year,@StartDate) as Year
+		   ,DATEPART(WEEKDAY,@StartDate) as DayOfWeek
+		   ,DATENAME(WEEKDAY,@StartDate) as WeekDayName		  
+		   ,  CASE 
+        WHEN DATEPART(month,@StartDate)= 12 or DATEPART(month,@StartDate)= 1 or DATEPART(month,@StartDate)= 2   THEN 'Winter'
+        WHEN DATEPART(month,@StartDate)= 3 or DATEPART(month,@StartDate)= 4 or DATEPART(month,@StartDate)= 5   THEN 'Spring'
+		WHEN DATEPART(month,@StartDate)= 6 or DATEPART(month,@StartDate)= 7 or DATEPART(month,@StartDate)= 8  THEN 'Summer'
+        ELSE 'Autumn'
+      END
+  SET @StartDate= DATEADD(dd, 1 , @StartDate)
+
+END
+GO

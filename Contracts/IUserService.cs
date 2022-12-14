@@ -13,4 +13,5 @@ public interface IUserService
     public Task<User> UpdateUser(User user);
     public Task<User> LogUserIn(string email, string password);
     public Task SetTokenForUser(long uId, string token);
+    public Task RemoveTokenFromUser(long uId);
 }
