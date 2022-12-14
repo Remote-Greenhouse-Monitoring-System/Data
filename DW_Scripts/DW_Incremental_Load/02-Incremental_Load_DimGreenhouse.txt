@@ -1,0 +1,192 @@
+/** INCREMENTAL LOAD For EDW.DimGreenhouse**/
+USE GreenhouseSystemDW
+GO
+/** Declare variables**/
+
+--Last updated variables
+
+DECLARE @LastLocalDate int
+SET @LastLocalDate = (SELECT MAX(LastLoadDate) FROM [etl].[LogUpdate] WHERE [Table] = 'DimGreenhouse')
+DECLARE @NewLoadDate int 
+SET @NewLoadDate= CONVERT(CHAR(8), GETDATE(),112)
+DECLARE @FutureDate int
+SET @FutureDate = 99990101
+
+/** start get added**/
+
+INSERT INTO [edw].[DimGreenhouse]
+           ([Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]
+           ,[ValidFrom]
+           ,[ValidTo])
+     SELECT
+            [Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]
+           ,@NewLoadDate
+		   ,@FutureDate
+		    FROM [stage].[DimGreenhouse]
+		   WHERE [Greenhouse_id] in (SELECT [Greenhouse_id]                                   
+									 FROM [stage].[DimGreenhouse]
+                                  EXCEPT 
+								 SELECT [Greenhouse_id]                                    
+                                      FROM [edw].[DimGreenhouse]
+								 WHERE ValidTo = 99990101  
+							     )
+
+/***************** Update Changes************************/
+
+DROP TABLE IF EXISTS temp
+/** Find all the changed rows in stage and exclude new added rows**/
+ SELECT
+           [Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]
+		   INTO temp
+FROM [stage].[DimGreenhouse]
+
+EXCEPT
+
+SELECT      [Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]		  
+FROM [edw].[DimGreenhouse]
+WHERE ValidTo = 99990101
+
+EXCEPT
+
+ SELECT
+            [Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]           
+		    FROM [stage].[DimGreenhouse]
+		   WHERE [Greenhouse_id] in (SELECT [Greenhouse_id]                                   
+									 FROM [stage].[DimGreenhouse]
+                                  EXCEPT 
+								 SELECT [Greenhouse_id]                                    
+                                      FROM [edw].[DimGreenhouse]
+								 WHERE ValidTo = 99990101  
+							     )
+/* Insert the new change in EDW*/
+INSERT INTO [edw].[DimGreenhouse]
+           ([Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]
+           ,[ValidFrom]
+           ,[ValidTo])
+     SELECT
+            [Greenhouse_id]
+           ,[GreenhouseName]
+           ,[PlantProfileName]
+           ,[Description]
+           ,[OptimalTemperature]
+           ,[OptimalHumidity]
+           ,[OptimalCo2]
+           ,[OptimalLight]
+           ,[TemperatureMax]
+           ,[TemperatureMin]
+           ,[HumidityMax]
+           ,[HumidityMin]
+           ,[Co2Max]
+           ,[Co2Min]
+           ,@NewLoadDate
+		   ,@FutureDate
+		    FROM temp
+-- update all the rows in edw.DimUser that contain the User_id in temp by putting the validto to the day before the upload
+UPDATE [edw].[DimGreenhouse]
+SET ValidTo=@NewLoadDate-1
+WHERE [Greenhouse_id] in (SELECT [Greenhouse_id]
+                      FROM temp ) AND [edw].[DimGreenhouse].ValidFrom<@NewLoadDate
+
+DROP TABLE IF EXISTS temp
+
+-- update edw.Dimcustomer if the Customers are deleted
+
+UPDATE [edw].[DimGreenhouse]
+SET ValidTo=@NewLoadDate-1
+WHERE [Greenhouse_id] in ( 
+SELECT [Greenhouse_id]FROM [edw].[DimGreenhouse] WHERE [Greenhouse_id] in (
+                                                            SELECT [Greenhouse_id]FROM [edw].[DimGreenhouse]
+															EXCEPT
+															SELECT [Greenhouse_id] FROM [stage].[DimGreenhouse]
+                                                            ) AND ValidTo = 99990101
+                    )
+
+
+--- Update etl.LogUpdate for DimUser with the new load date
+
+
+INSERT INTO [GreenhouseSystemDW].[etl].[LogUpdate]
+           ([Table]
+      ,[LastLoadDate])
+     VALUES
+           ('DimGreenhouse'
+           ,@NewLoadDate)
+GO

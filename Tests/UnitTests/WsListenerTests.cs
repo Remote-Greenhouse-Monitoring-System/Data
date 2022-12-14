@@ -29,16 +29,19 @@ public class WsListenerTests
     [TestMethod]
     public void GetMeasurementFromReceivedDataReturnsMeasurement()
     {
-        var m = BackgroundListener.GetMeasurementFromReceivedData(1, "00ef01c5060d10");
+        var m = BackgroundListener.GetMeasurementFromReceivedData("00ef01c5060d0000007b10");
         Assert.AreEqual( 23.9, Math.Round(m.Temperature, 1));
         Assert.AreEqual(45.3, Math.Round(m.Humidity), 1);
         Assert.AreEqual(1549, m.Co2);
+        Assert.AreEqual(123, m.Light);
     }
     
     [TestMethod]
     public void GetHexStringFromThresholdReturnsCorrectString()
     {
-        var t = new Threshold{TemperatureMax = 5.5f, TemperatureMin = 1.5f,HumidityMax = 89.3f,HumidityMin = 24.5f, Co2Max = 123,Co2Min = 111};
+        var t = new Threshold{TemperatureMax = 5.5f, TemperatureMin = 1.5f, 
+            HumidityMax = 89.3f, HumidityMin = 24.5f,
+            Co2Max = 123, Co2Min = 111};
         var result = BackgroundListener.GetHexStringFromThreshold(t);
         
         Assert.AreEqual("0037000F037D00F5007B006F", result);
@@ -47,8 +50,8 @@ public class WsListenerTests
     [TestMethod]
     public void GetStatusFromReceivedDataReturnsNewStatus()
     {
-        var newStatusBits = BackgroundListener.GetStatusFromReceivedData("00ef01c5060d10");
-        Assert.AreEqual("00010000", newStatusBits);
+        var newStatusBits = BackgroundListener.GetStatusFromReceivedData("00ef01c5060d0000007b08");
+        Assert.AreEqual("00001000", newStatusBits);
     }
 
     [TestMethod]

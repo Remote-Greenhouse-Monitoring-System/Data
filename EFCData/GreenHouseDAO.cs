@@ -11,11 +11,6 @@ namespace EFCData;
 public class GreenHouseDao : IGreenHouseService{
     
     private readonly GreenhouseSystemContext _greenhouseSystemContext;
-    private readonly Dictionary<string, long> _euiIdMap = new ()
-    {
-        {"0004A30B00E8355E", 1},
-        {"0004A30B00251001", 2}
-    };
 
     public GreenHouseDao(GreenhouseSystemContext greenhouseSystemContext)
     {
@@ -173,9 +168,21 @@ public class GreenHouseDao : IGreenHouseService{
 
     }
 
-    public long GetGreenhouseIdByEui(string eui)
+    public async Task<long> GetGreenhouseIdByEui(string eui)
     {
-        return _euiIdMap[eui];
+        long greenHouseId;
+        try
+        {
+            var g = await _greenhouseSystemContext.GreenHouses!.FirstAsync(g=>g.DeviceEui==eui);
+            greenHouseId = g.Id;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Greenhouse could not be found.");
+        }
+        
+        return greenHouseId;
     }
 
     public async Task<GreenHouse> GetGreenHouseById(long id)
