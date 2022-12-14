@@ -137,7 +137,7 @@ public class MeasurementDao : IMeasurementService
         {
             foreach (var greenHouse in greenHouses)
             {
-                Measurement m = new Measurement(greenHouse.Id,measurement.Temperature,measurement.Humidity,measurement.Co2, measurement.Light);
+                Measurement m = new Measurement(measurement.Temperature,measurement.Humidity,measurement.Co2, measurement.Light);
                 greenHouse.Measurements!.Add(m);
                 await _greenhouseSystemContext.Measurements!.AddAsync(m);
                 _greenhouseSystemContext.GreenHouses!.Update(greenHouse);
