@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.WebSockets;
 using System.Text;
 using Contracts;
@@ -58,7 +59,7 @@ public class BackgroundListener : BackgroundService
             //if uplinkDto is null or 'cmd' is not "rx" or data are nullOrEmpty continue listening
             if (upLinkDto is not { Cmd: "rx" } || string.IsNullOrEmpty(upLinkDto.Data)) continue;
             
-            var greenhouseId = greenhouseService.GetGreenhouseIdByEui(upLinkDto.Eui);
+            var greenhouseId = await greenhouseService.GetGreenhouseIdByEui(upLinkDto.Eui);
             //extract measurements and send to DB
             var newMeasurement = GetMeasurementFromReceivedData(upLinkDto.Data);
             await measurementService.AddMeasurement(newMeasurement, greenhouseId);
@@ -118,9 +119,12 @@ public class BackgroundListener : BackgroundService
         i += TwoBytes;
         var co2 = Convert.ToInt16(data.Substring(i,TwoBytes),16);
         i += TwoBytes;
-        var light = Convert.ToInt16(data.Substring(i,FourBytes),16);
+        var intRep = BitConverter.GetBytes(Int32.Parse(data.Substring(i,FourBytes), NumberStyles.AllowHexSpecifier));
+        if (BitConverter.IsLittleEndian)
+            Array.Reverse(intRep);
+        var light = BitConverter.ToSingle(intRep, 0);
 
-        return new Measurement((float)temperature, (float)humidity, co2, light);
+        return new Measurement((float)temperature, (float)humidity, co2, (int)light);
     }
 
     public static string GetStatusFromReceivedData(string data)
@@ -167,10 +171,10 @@ public class BackgroundListener : BackgroundService
         return changedActions;
     }
     
-    public static string GetHexStringFromThreshold(Threshold thresholds)
+    public static string GetHexStringFromThreshold(Threshold? thresholds)
     {
         //if threshold equals new/=empty threshold ->return zeros
-        if (thresholds.Equals(new Threshold()))
+        if (thresholds==null || thresholds.Equals(new Threshold()))
             return "000000000000000000000000";
 
         var thresholdHexString = "";

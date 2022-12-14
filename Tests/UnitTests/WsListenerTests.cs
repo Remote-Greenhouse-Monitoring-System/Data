@@ -39,7 +39,9 @@ public class WsListenerTests
     [TestMethod]
     public void GetHexStringFromThresholdReturnsCorrectString()
     {
-        var t = new Threshold{TemperatureMax = 5.5f, TemperatureMin = 1.5f,HumidityMax = 89.3f,HumidityMin = 24.5f, Co2Max = 123,Co2Min = 111};
+        var t = new Threshold{TemperatureMax = 5.5f, TemperatureMin = 1.5f, 
+            HumidityMax = 89.3f, HumidityMin = 24.5f,
+            Co2Max = 123, Co2Min = 111};
         var result = BackgroundListener.GetHexStringFromThreshold(t);
         
         Assert.AreEqual("0037000F037D00F5007B006F", result);

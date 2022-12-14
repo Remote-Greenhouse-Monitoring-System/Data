@@ -29,6 +29,6 @@ public class Measurement
 
     public override string ToString()
     {
-        return "M-"+Id+" : temperature="+Temperature+"C, humidity="+Humidity+"%, Co2="+Co2 +" - at "+Timestamp;
+        return "M-"+Id+":\n\tTemperature:"+Temperature+"C, Humidity:"+Humidity+"%, Co2:"+Co2+ ", Light:"+Light+ " - at "+Timestamp;
     }
 }
